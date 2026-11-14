@@ -182,10 +182,35 @@
     });
   });
 
-  document.querySelectorAll("[data-gallery]").forEach(button => button.addEventListener("click", () => {
-    const key = button.dataset.gallery;
-    if (inputIds[key]) $(inputIds[key]).click();
-  }));
+  // Delegate these controls from the document so taps work consistently on mobile browsers.
+  document.addEventListener("click", event => {
+    const clicked = event.target && event.target.closest
+      ? event.target.closest("[data-gallery], [data-link]")
+      : null;
+    if (!clicked) return;
+
+    if (clicked.dataset.gallery) {
+      event.preventDefault();
+      const input = $(inputIds[clicked.dataset.gallery]);
+      if (!input) {
+        showToast("The gallery picker is unavailable for this item.");
+        return;
+      }
+      // Reset first so selecting the same photo again still fires the change event.
+      input.value = "";
+      try {
+        input.click();
+      } catch {
+        showToast("Could not open your gallery. Please try again.");
+      }
+      return;
+    }
+
+    if (clicked.dataset.link) {
+      event.preventDefault();
+      openLinkModal(clicked.dataset.link);
+    }
+  });
 
   function openLinkModal(key) {
     state.activeCategory = key;
@@ -207,7 +232,7 @@
     state.activeCategory = null;
   }
 
-  document.querySelectorAll("[data-link]").forEach(button => button.addEventListener("click", () => openLinkModal(button.dataset.link)));
+
   $("closeLinkModal").addEventListener("click", closeLinkModal);
   $("cancelLink").addEventListener("click", closeLinkModal);
   $("linkModalBackdrop").addEventListener("click", closeLinkModal);
