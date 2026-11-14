@@ -78,68 +78,111 @@
 
       <section class="page" id="page-studio">
         <div class="page-heading">
-          <div><p class="eyebrow">OUTFIT BUILDER</p><h1>Outfit Studio</h1><p class="subheading">Put together pieces and see how they work as one look.</p></div>
+          <div>
+            <p class="eyebrow">OUTFIT BUILDER</p>
+            <h1>Outfit Studio</h1>
+            <p class="subheading">Build your look in one place. Add clothing photos or bring in an item from a product link.</p>
+          </div>
           <button class="secondary-btn" id="clearStudio">Clear studio</button>
         </div>
-        <div class="studio-layout">
-          <div class="editor-column">
-            <div class="panel">
-              <div class="panel-heading"><div><span class="step-number">01</span><h3>Add your pieces</h3></div><span class="muted">Upload an image for each category</span></div>
-              <div class="upload-grid">
-                <label class="upload-card" for="topInput">
-                  <input id="topInput" type="file" accept="image/*" />
-                  <span class="upload-symbol">＋</span><strong>Top / Shirt</strong><small id="topFileName">Choose an image</small><span class="upload-action">Upload image</span>
-                </label>
-                <label class="upload-card" for="bottomInput">
-                  <input id="bottomInput" type="file" accept="image/*" />
-                  <span class="upload-symbol">＋</span><strong>Bottom / Pants</strong><small id="bottomFileName">Choose an image</small><span class="upload-action">Upload image</span>
-                </label>
-                <label class="upload-card" for="shoesInput">
-                  <input id="shoesInput" type="file" accept="image/*" />
-                  <span class="upload-symbol">＋</span><strong>Footwear</strong><small id="shoesFileName">Choose an image</small><span class="upload-action">Upload image</span>
-                </label>
-              </div>
-            </div>
 
-            <div class="panel">
-              <div class="panel-heading"><div><span class="step-number">02</span><h3>Add an online item</h3></div><span class="muted">Optional</span></div>
-              <div class="link-import">
-                <label for="productUrl">Product URL</label>
-                <div class="url-row"><input id="productUrl" type="url" placeholder="Paste a product link here..." /><button class="secondary-btn" id="addUrl">Add link</button></div>
-                <p class="helper-text">This saves a shortcut to the product page. Automatic product-image importing is not connected in this starter version.</p>
-                <div id="urlItems" class="url-items"></div>
-              </div>
-            </div>
-
-            <div class="panel save-panel">
-              <div><h3>Save this combination</h3><p class="muted">Give your outfit a name so you can find it later.</p></div>
-              <div class="save-row"><input id="outfitName" type="text" maxlength="40" placeholder="e.g. Everyday casual" /><button class="primary-btn" id="saveLook">♡ Save look</button></div>
-              <p class="status-message" id="studioMessage" aria-live="polite"></p>
-            </div>
-          </div>
-
+        <div class="studio-layout studio-layout-new">
           <div class="preview-column">
-            <div class="preview-panel">
-              <div class="preview-header"><div><p class="eyebrow">LIVE PREVIEW</p><h3>Your combination</h3></div><div class="view-switch"><button class="view-btn active" data-view="flat">Flat lay</button><button class="view-btn" data-view="model">Model</button></div></div>
-              <div class="preview-stage" id="previewStage">
-                <div class="empty-preview" id="emptyPreview"><div class="empty-shape">✳</div><strong>Your outfit will appear here</strong><span>Add clothing images to start styling.</span></div>
-                <div class="flat-preview hidden" id="flatPreview">
-                  <div class="flat-item" id="topPreview"><span>TOP</span><img alt="Top preview" /></div>
-                  <div class="flat-item" id="bottomPreview"><span>BOTTOM</span><img alt="Bottom preview" /></div>
-                  <div class="flat-item shoes-preview" id="shoesPreview"><span>FOOTWEAR</span><img alt="Footwear preview" /></div>
+            <div class="preview-panel studio-preview-panel">
+              <div class="preview-header">
+                <div class="studio-title-wrap">
+                  <p class="eyebrow">YOUR OUTFIT</p>
+                  <h3>Outfit board</h3>
+                  <p class="studio-instructions">Tap ＋ to choose a photo, or ↗ to add an item from a product link.</p>
                 </div>
+                <div class="view-switch">
+                  <button class="view-btn active" data-view="flat">Flat lay</button>
+                  <button class="view-btn" data-view="model">Model</button>
+                </div>
+              </div>
+
+              <div class="preview-stage studio-preview-stage" id="previewStage">
+                <div class="flat-preview studio-flat-preview" id="flatPreview">
+                  <div class="flat-item slot-card" id="topPreview">
+                    <span class="slot-label">TOP / SHIRT</span>
+                    <img alt="Top or shirt preview" />
+                    <div class="slot-placeholder">
+                      <span class="slot-placeholder-icon">＋</span>
+                      <strong>Add a top</strong>
+                      <small>Photo or product link</small>
+                    </div>
+                    <div class="slot-actions">
+                      <button class="slot-action" type="button" data-gallery="top" title="Choose top from gallery" aria-label="Choose top from gallery">＋</button>
+                      <button class="slot-action" type="button" data-link="top" title="Add top from product link" aria-label="Add top from product link">↗</button>
+                    </div>
+                    <input class="slot-file-input" id="topInput" type="file" accept="image/*" />
+                  </div>
+
+                  <div class="flat-item slot-card" id="bottomPreview">
+                    <span class="slot-label">BOTTOM / PANTS</span>
+                    <img alt="Bottom or pants preview" />
+                    <div class="slot-placeholder">
+                      <span class="slot-placeholder-icon">＋</span>
+                      <strong>Add a bottom</strong>
+                      <small>Photo or product link</small>
+                    </div>
+                    <div class="slot-actions">
+                      <button class="slot-action" type="button" data-gallery="bottom" title="Choose bottom from gallery" aria-label="Choose bottom from gallery">＋</button>
+                      <button class="slot-action" type="button" data-link="bottom" title="Add bottom from product link" aria-label="Add bottom from product link">↗</button>
+                    </div>
+                    <input class="slot-file-input" id="bottomInput" type="file" accept="image/*" />
+                  </div>
+
+                  <div class="flat-item slot-card shoes-preview" id="shoesPreview">
+                    <span class="slot-label">FOOTWEAR</span>
+                    <img alt="Footwear preview" />
+                    <div class="slot-placeholder">
+                      <span class="slot-placeholder-icon">＋</span>
+                      <strong>Add footwear</strong>
+                      <small>Photo or product link</small>
+                    </div>
+                    <div class="slot-actions">
+                      <button class="slot-action" type="button" data-gallery="shoes" title="Choose footwear from gallery" aria-label="Choose footwear from gallery">＋</button>
+                      <button class="slot-action" type="button" data-link="shoes" title="Add footwear from product link" aria-label="Add footwear from product link">↗</button>
+                    </div>
+                    <input class="slot-file-input" id="shoesInput" type="file" accept="image/*" />
+                  </div>
+                </div>
+
                 <div class="model-preview hidden" id="modelPreview">
                   <div class="model-caption">STYLE MOCKUP <span>NOT A REAL TRY-ON</span></div>
                   <div class="person">
-                    <div class="person-head"></div><div class="person-neck"></div>
+                    <div class="person-head"></div>
+                    <div class="person-neck"></div>
                     <div class="person-body"><div class="model-top" id="modelTop"></div></div>
                     <div class="person-legs"><div class="model-bottom" id="modelBottom"></div></div>
                     <div class="person-feet"><div class="model-shoes" id="modelShoes"></div></div>
                   </div>
                   <p class="model-note">Illustrative outfit layout. Realistic AI virtual try-on is not included yet.</p>
+                  <div class="model-controls">
+                    <div><span>Top</span><button type="button" data-gallery="top" aria-label="Choose top photo">＋</button><button type="button" data-link="top" aria-label="Add top by link">↗</button></div>
+                    <div><span>Bottom</span><button type="button" data-gallery="bottom" aria-label="Choose bottom photo">＋</button><button type="button" data-link="bottom" aria-label="Add bottom by link">↗</button></div>
+                    <div><span>Footwear</span><button type="button" data-gallery="shoes" aria-label="Choose footwear photo">＋</button><button type="button" data-link="shoes" aria-label="Add footwear by link">↗</button></div>
+                  </div>
                 </div>
               </div>
-              <div class="preview-footer"><span><i class="live-dot"></i> Updates as you add pieces</span><span id="pieceCount">0 / 3 pieces</span></div>
+
+              <div class="preview-footer">
+                <span><i class="live-dot"></i> Your outfit updates as you add pieces</span>
+                <span id="pieceCount">0 / 3 pieces</span>
+              </div>
+            </div>
+
+            <div class="panel save-panel studio-save-panel">
+              <div>
+                <h3>Save this look</h3>
+                <p class="muted">Give your outfit a name so you can find it later.</p>
+              </div>
+              <div class="save-row">
+                <input id="outfitName" type="text" maxlength="40" placeholder="e.g. Everyday casual" />
+                <button class="primary-btn" id="saveLook">♡ Save look</button>
+              </div>
+              <p class="status-message" id="studioMessage" aria-live="polite"></p>
             </div>
           </div>
         </div>
@@ -158,6 +201,27 @@
 
       <footer class="app-footer"><span>YourWardrobe</span><span>Build your look. Find your style.</span></footer>
     </main>
+  </div>
+  <div class="link-modal hidden" id="linkModal">
+    <div class="link-modal-backdrop" id="linkModalBackdrop"></div>
+    <div class="link-modal-card" role="dialog" aria-modal="true" aria-labelledby="linkModalTitle">
+      <button class="modal-close" type="button" id="closeLinkModal" aria-label="Close">×</button>
+      <p class="eyebrow">ADD ITEM BY LINK</p>
+      <h3 id="linkModalTitle">Add an item</h3>
+      <p class="modal-description">Paste the product page link. YourWardrobe will try to find the product image and place it in this slot.</p>
+      <label for="productUrl">Product page URL</label>
+      <input id="productUrl" type="url" placeholder="https://shop.example.com/product" />
+      <p class="helper-text" id="linkHelp">Some stores block image previews. If that happens, you can use a direct image link or choose a photo from your gallery.</p>
+      <div class="manual-image-fallback hidden" id="manualImageFallback">
+        <label for="manualImageUrl">Direct image URL</label>
+        <input id="manualImageUrl" type="url" placeholder="https://.../product-image.jpg" />
+        <button class="secondary-btn" type="button" id="useDirectImage">Use this image</button>
+      </div>
+      <div class="modal-actions">
+        <button class="secondary-btn" type="button" id="cancelLink">Cancel</button>
+        <button class="primary-btn" type="button" id="addUrl">Find product image</button>
+      </div>
+    </div>
   </div>
   <div class="toast" id="toast" role="status"></div>
   <script src="./app.js"></script>
