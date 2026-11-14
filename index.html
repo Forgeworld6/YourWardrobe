@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f7f5" />
+  <meta name="description" content="YourWardrobe — plan outfits, organize your clothes, and save your looks." />
+  <title>YourWardrobe</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="YourWardrobe home">
+        <span class="brand-mark">Y</span>
+        <span class="brand-name">YourWardrobe</span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-page="dashboard"><span class="nav-icon">⌂</span> Dashboard</button>
+        <button class="nav-item" data-page="studio"><span class="nav-icon">✳</span> Outfit Studio</button>
+        <button class="nav-item" data-page="wardrobe"><span class="nav-icon">▤</span> My Wardrobe</button>
+        <button class="nav-item" data-page="saved"><span class="nav-icon">♡</span> Saved Looks</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="side-note">
+          <span class="note-dot"></span>
+          <div><strong>Your style, your space.</strong><small>Build a look that feels like you.</small></div>
+        </div>
+        <button class="nav-item" id="themeToggle"><span class="nav-icon">◐</span> Switch theme</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="pageCrumb">Dashboard</strong></div>
+        <div class="topbar-right">
+          <span class="today-pill" id="todayLabel">Your style space</span>
+          <div class="avatar">YW</div>
+        </div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="welcome-row">
+          <div>
+            <p class="eyebrow">YOUR PERSONAL STYLE SPACE</p>
+            <h1>Good style starts<br class="mobile-break" /> with a plan.</h1>
+            <p class="subheading">Mix your pieces, explore combinations, and keep your favourite looks in one place.</p>
+          </div>
+          <button class="primary-btn" data-go="studio"><span>＋</span> Create an outfit</button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Wardrobe items</span><span class="stat-symbol">▤</span></div><strong id="statItems">0</strong><small>Pieces added by you</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Saved looks</span><span class="stat-symbol">♡</span></div><strong id="statLooks">0</strong><small>Your outfit ideas</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Outfit studio</span><span class="stat-symbol">✳</span></div><strong>Ready</strong><small>Start styling anytime</small></article>
+        </div>
+
+        <div class="section-heading">
+          <div><p class="eyebrow">GET STARTED</p><h2>Make it yours</h2></div>
+        </div>
+        <div class="quick-grid">
+          <button class="quick-card" data-go="studio">
+            <span class="quick-icon">＋</span><span class="quick-title">Build an outfit</span><span class="quick-desc">Add a top, bottom and footwear to create a look.</span><span class="quick-arrow">↗</span>
+          </button>
+          <button class="quick-card" data-go="wardrobe">
+            <span class="quick-icon">▤</span><span class="quick-title">Organize your wardrobe</span><span class="quick-desc">Keep your clothing pieces together in one space.</span><span class="quick-arrow">↗</span>
+          </button>
+          <button class="quick-card" data-go="saved">
+            <span class="quick-icon">♡</span><span class="quick-title">Your saved looks</span><span class="quick-desc">Come back to outfit combinations you like.</span><span class="quick-arrow">↗</span>
+          </button>
+        </div>
+        <div class="tip-banner"><div class="tip-icon">✦</div><div><strong>A little tip</strong><p>Start by adding photos of clothes you already own. You can also add a product link for an item you're considering.</p></div></div>
+      </section>
+
+      <section class="page" id="page-studio">
+        <div class="page-heading">
+          <div><p class="eyebrow">OUTFIT BUILDER</p><h1>Outfit Studio</h1><p class="subheading">Put together pieces and see how they work as one look.</p></div>
+          <button class="secondary-btn" id="clearStudio">Clear studio</button>
+        </div>
+        <div class="studio-layout">
+          <div class="editor-column">
+            <div class="panel">
+              <div class="panel-heading"><div><span class="step-number">01</span><h3>Add your pieces</h3></div><span class="muted">Upload an image for each category</span></div>
+              <div class="upload-grid">
+                <label class="upload-card" for="topInput">
+                  <input id="topInput" type="file" accept="image/*" />
+                  <span class="upload-symbol">＋</span><strong>Top / Shirt</strong><small id="topFileName">Choose an image</small><span class="upload-action">Upload image</span>
+                </label>
+                <label class="upload-card" for="bottomInput">
+                  <input id="bottomInput" type="file" accept="image/*" />
+                  <span class="upload-symbol">＋</span><strong>Bottom / Pants</strong><small id="bottomFileName">Choose an image</small><span class="upload-action">Upload image</span>
+                </label>
+                <label class="upload-card" for="shoesInput">
+                  <input id="shoesInput" type="file" accept="image/*" />
+                  <span class="upload-symbol">＋</span><strong>Footwear</strong><small id="shoesFileName">Choose an image</small><span class="upload-action">Upload image</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-heading"><div><span class="step-number">02</span><h3>Add an online item</h3></div><span class="muted">Optional</span></div>
+              <div class="link-import">
+                <label for="productUrl">Product URL</label>
+                <div class="url-row"><input id="productUrl" type="url" placeholder="Paste a product link here..." /><button class="secondary-btn" id="addUrl">Add link</button></div>
+                <p class="helper-text">This saves a shortcut to the product page. Automatic product-image importing is not connected in this starter version.</p>
+                <div id="urlItems" class="url-items"></div>
+              </div>
+            </div>
+
+            <div class="panel save-panel">
+              <div><h3>Save this combination</h3><p class="muted">Give your outfit a name so you can find it later.</p></div>
+              <div class="save-row"><input id="outfitName" type="text" maxlength="40" placeholder="e.g. Everyday casual" /><button class="primary-btn" id="saveLook">♡ Save look</button></div>
+              <p class="status-message" id="studioMessage" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <div class="preview-column">
+            <div class="preview-panel">
+              <div class="preview-header"><div><p class="eyebrow">LIVE PREVIEW</p><h3>Your combination</h3></div><div class="view-switch"><button class="view-btn active" data-view="flat">Flat lay</button><button class="view-btn" data-view="model">Model</button></div></div>
+              <div class="preview-stage" id="previewStage">
+                <div class="empty-preview" id="emptyPreview"><div class="empty-shape">✳</div><strong>Your outfit will appear here</strong><span>Add clothing images to start styling.</span></div>
+                <div class="flat-preview hidden" id="flatPreview">
+                  <div class="flat-item" id="topPreview"><span>TOP</span><img alt="Top preview" /></div>
+                  <div class="flat-item" id="bottomPreview"><span>BOTTOM</span><img alt="Bottom preview" /></div>
+                  <div class="flat-item shoes-preview" id="shoesPreview"><span>FOOTWEAR</span><img alt="Footwear preview" /></div>
+                </div>
+                <div class="model-preview hidden" id="modelPreview">
+                  <div class="model-caption">STYLE MOCKUP <span>NOT A REAL TRY-ON</span></div>
+                  <div class="person">
+                    <div class="person-head"></div><div class="person-neck"></div>
+                    <div class="person-body"><div class="model-top" id="modelTop"></div></div>
+                    <div class="person-legs"><div class="model-bottom" id="modelBottom"></div></div>
+                    <div class="person-feet"><div class="model-shoes" id="modelShoes"></div></div>
+                  </div>
+                  <p class="model-note">Illustrative outfit layout. Realistic AI virtual try-on is not included yet.</p>
+                </div>
+              </div>
+              <div class="preview-footer"><span><i class="live-dot"></i> Updates as you add pieces</span><span id="pieceCount">0 / 3 pieces</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-wardrobe">
+        <div class="page-heading"><div><p class="eyebrow">YOUR COLLECTION</p><h1>My Wardrobe</h1><p class="subheading">The pieces you've added to your style space.</p></div><button class="primary-btn" data-go="studio">＋ Add pieces</button></div>
+        <div class="wardrobe-toolbar"><span id="wardrobeCount">0 items</span><span class="muted">Items are stored on this device</span></div>
+        <div class="wardrobe-grid" id="wardrobeGrid"><div class="empty-card"><span>▤</span><strong>Your wardrobe is waiting</strong><p>Add clothing images in Outfit Studio. They'll show up here.</p><button class="secondary-btn" data-go="studio">Go to Outfit Studio</button></div></div>
+      </section>
+
+      <section class="page" id="page-saved">
+        <div class="page-heading"><div><p class="eyebrow">YOUR OUTFIT IDEAS</p><h1>Saved Looks</h1><p class="subheading">Your combinations, ready whenever you need inspiration.</p></div><button class="primary-btn" data-go="studio">＋ Create a look</button></div>
+        <div class="saved-grid" id="savedGrid"><div class="empty-card"><span>♡</span><strong>No saved looks yet</strong><p>Build an outfit and save it to see it here.</p><button class="secondary-btn" data-go="studio">Create your first look</button></div></div>
+      </section>
+
+      <footer class="app-footer"><span>YourWardrobe</span><span>Build your look. Find your style.</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
