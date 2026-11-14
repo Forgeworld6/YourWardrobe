@@ -36,14 +36,14 @@
           <div>
             <p class="eyebrow">HOME</p>
             <h1>Build your outfit</h1>
-            <p class="subheading">Add each piece from your gallery or bring it in with a product link.</p>
+            <p class="subheading">Tap the + area beside each piece to add a photo from your gallery.</p>
           </div>
           <button class="clear-studio-btn" type="button" id="clearStudio">Clear all</button>
         </div>
 
         <div class="outfit-board" aria-label="Outfit items">
-          <article class="outfit-slot" id="topPreview">
-            <div class="slot-visual">
+          <article class="outfit-slot outfit-slot--top" id="topPreview">
+            <div class="slot-visual" data-gallery="top" role="button" tabindex="0" aria-label="Add or change top from gallery">
               <img alt="Top or shirt preview" />
               <div class="slot-placeholder">
                 <span class="slot-placeholder-icon">＋</span>
@@ -52,16 +52,12 @@
             </div>
             <div class="slot-tools">
               <div class="slot-heading"><strong>Top / Shirt</strong><span>01</span></div>
-              <div class="slot-actions">
-                <button class="slot-action" type="button" data-gallery="top" title="Add from gallery" aria-label="Add top from gallery">＋</button>
-                <button class="slot-action" type="button" data-link="top" title="Add from link" aria-label="Add top from link"><span aria-hidden="true">⛓</span></button>
-              </div>
-            </div>
+</div>
             <input class="slot-file-input" id="topInput" type="file" accept="image/*" />
           </article>
 
-          <article class="outfit-slot" id="bottomPreview">
-            <div class="slot-visual">
+          <article class="outfit-slot outfit-slot--bottom" id="bottomPreview">
+            <div class="slot-visual" data-gallery="bottom" role="button" tabindex="0" aria-label="Add or change bottom from gallery">
               <img alt="Bottom or pants preview" />
               <div class="slot-placeholder">
                 <span class="slot-placeholder-icon">＋</span>
@@ -70,16 +66,12 @@
             </div>
             <div class="slot-tools">
               <div class="slot-heading"><strong>Bottom / Pants</strong><span>02</span></div>
-              <div class="slot-actions">
-                <button class="slot-action" type="button" data-gallery="bottom" title="Add from gallery" aria-label="Add bottom from gallery">＋</button>
-                <button class="slot-action" type="button" data-link="bottom" title="Add from link" aria-label="Add bottom from link"><span aria-hidden="true">⛓</span></button>
-              </div>
-            </div>
+</div>
             <input class="slot-file-input" id="bottomInput" type="file" accept="image/*" />
           </article>
 
-          <article class="outfit-slot" id="shoesPreview">
-            <div class="slot-visual">
+          <article class="outfit-slot outfit-slot--shoes" id="shoesPreview">
+            <div class="slot-visual" data-gallery="shoes" role="button" tabindex="0" aria-label="Add or change footwear from gallery">
               <img alt="Footwear preview" />
               <div class="slot-placeholder">
                 <span class="slot-placeholder-icon">＋</span>
@@ -88,11 +80,7 @@
             </div>
             <div class="slot-tools">
               <div class="slot-heading"><strong>Footwear</strong><span>03</span></div>
-              <div class="slot-actions">
-                <button class="slot-action" type="button" data-gallery="shoes" title="Add from gallery" aria-label="Add footwear from gallery">＋</button>
-                <button class="slot-action" type="button" data-link="shoes" title="Add from link" aria-label="Add footwear from link"><span aria-hidden="true">⛓</span></button>
-              </div>
-            </div>
+</div>
             <input class="slot-file-input" id="shoesInput" type="file" accept="image/*" />
           </article>
         </div>
@@ -121,7 +109,7 @@
 
       <section class="page" id="page-wardrobe">
         <div class="page-heading">
-          <div><p class="eyebrow">YOUR HISTORY</p><h1>Items used before</h1><p class="subheading">Clothing pieces you've added from your gallery or product links.</p></div>
+          <div><p class="eyebrow">YOUR HISTORY</p><h1>Items used before</h1><p class="subheading">Clothing pieces you've added from your gallery.</p></div>
         </div>
         <div class="wardrobe-toolbar"><span id="wardrobeCount">0 items</span><span class="muted">Saved on this device</span></div>
         <div class="wardrobe-grid" id="wardrobeGrid">
@@ -162,25 +150,6 @@
   <div class="update-banner hidden" id="updateBanner" role="status" aria-live="polite">
     <div class="update-banner-copy"><strong>Update available</strong><span>A newer version of YourWardrobe is ready.</span></div>
     <div class="update-banner-actions"><button type="button" id="dismissUpdate">Later</button><button type="button" id="applyUpdate">Update now</button></div>
-  </div>
-
-  <div class="link-modal hidden" id="linkModal">
-    <div class="link-modal-backdrop" id="linkModalBackdrop"></div>
-    <div class="link-modal-card" role="dialog" aria-modal="true" aria-labelledby="linkModalTitle">
-      <button class="modal-close" type="button" id="closeLinkModal" aria-label="Close">×</button>
-      <p class="eyebrow">ADD ITEM BY LINK</p>
-      <h3 id="linkModalTitle">Add an item</h3>
-      <p class="modal-description">Paste the product page link. YourWardrobe will try to find the product image and place it in this slot.</p>
-      <label for="productUrl">Product page URL</label>
-      <input id="productUrl" type="url" placeholder="https://shop.example.com/product" />
-      <p class="helper-text" id="linkHelp">Some stores block image previews. If that happens, you can use a direct image link or choose a photo from your gallery.</p>
-      <div class="manual-image-fallback hidden" id="manualImageFallback">
-        <label for="manualImageUrl">Direct image URL</label>
-        <input id="manualImageUrl" type="url" placeholder="https://.../product-image.jpg" />
-        <button class="secondary-btn" type="button" id="useDirectImage">Use this image</button>
-      </div>
-      <div class="modal-actions"><button class="secondary-btn" type="button" id="cancelLink">Cancel</button><button class="primary-btn" type="button" id="addUrl">Find product image</button></div>
-    </div>
   </div>
 
   <div class="toast" id="toast" role="status"></div>
