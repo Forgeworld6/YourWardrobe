@@ -10,6 +10,13 @@
     wardrobe: load("yw_wardrobe", [])
   };
 
+  let soundEnabled = localStorage.getItem("yw_sound") !== "off";
+  let audioContext = null;
+  let introSoundPlayed = false;
+  let serviceWorkerRegistration = null;
+  let watchedRegistration = null;
+  let applyingUpdate = false;
+
   function load(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; }
   }
@@ -26,6 +33,58 @@
     toast.classList.add("show");
     clearTimeout(showToast.timer);
     showToast.timer = setTimeout(() => toast.classList.remove("show"), 2300);
+  }
+
+  function updateSoundControls() {
+    if ($("soundStatus")) $("soundStatus").textContent = soundEnabled ? "On" : "Off";
+    if ($("introSoundButton")) $("introSoundButton").textContent = soundEnabled ? "♫ Play intro sound" : "♫ Enable intro sound";
+  }
+
+  function playIntroSound() {
+    if (!soundEnabled || introSoundPlayed) return;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    try {
+      audioContext = audioContext || new AudioContextClass();
+      const playChime = () => {
+        if (introSoundPlayed || !soundEnabled || !audioContext || audioContext.state !== "running") return;
+        introSoundPlayed = true;
+        const now = audioContext.currentTime;
+        const master = audioContext.createGain();
+        master.gain.setValueAtTime(0.0001, now);
+        master.gain.exponentialRampToValueAtTime(0.075, now + 0.035);
+        master.gain.exponentialRampToValueAtTime(0.0001, now + 0.78);
+        master.connect(audioContext.destination);
+
+        [[523.25, 0], [659.25, 0.13], [783.99, 0.26]].forEach(([frequency, delay]) => {
+          const oscillator = audioContext.createOscillator();
+          const envelope = audioContext.createGain();
+          const start = now + delay;
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(frequency, start);
+          envelope.gain.setValueAtTime(0.0001, start);
+          envelope.gain.exponentialRampToValueAtTime(0.42, start + 0.025);
+          envelope.gain.exponentialRampToValueAtTime(0.0001, start + 0.23);
+          oscillator.connect(envelope);
+          envelope.connect(master);
+          oscillator.start(start);
+          oscillator.stop(start + 0.25);
+        });
+      };
+
+      if (audioContext.state === "running") playChime();
+      else audioContext.resume().then(playChime).catch(() => {});
+    } catch {
+      // Some browsers require a tap before allowing audio playback.
+    }
+  }
+
+  function enableIntroSound() {
+    soundEnabled = true;
+    localStorage.setItem("yw_sound", "on");
+    updateSoundControls();
+    playIntroSound();
   }
 
   function safeText(value) {
@@ -45,6 +104,21 @@
   document.querySelectorAll("[data-page]").forEach(btn => btn.addEventListener("click", () => go(btn.dataset.page)));
   document.querySelectorAll("[data-go]").forEach(btn => btn.addEventListener("click", () => go(btn.dataset.go)));
   $("mobileMenu").addEventListener("click", () => $("sidebar").classList.toggle("open"));
+  $("soundToggle").addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem("yw_sound", soundEnabled ? "on" : "off");
+    updateSoundControls();
+    if (soundEnabled) {
+      introSoundPlayed = false;
+      playIntroSound();
+      showToast("Sound effects enabled.");
+    } else {
+      showToast("Sound effects muted.");
+    }
+  });
+
+  $("introSoundButton").addEventListener("click", enableIntroSound);
+  updateSoundControls();
 
   function updateStats() {
     $("statItems").textContent = state.wardrobe.length;
@@ -381,7 +455,92 @@
   updateStats();
   updatePreview();
 
+  function showUpdateBanner() {
+    $("updateBanner").classList.remove("hidden");
+  }
+
+  function watchServiceWorker(registration) {
+    if (!registration || watchedRegistration === registration) return;
+    watchedRegistration = registration;
+    if (registration.waiting && navigator.serviceWorker.controller) showUpdateBanner();
+
+    registration.addEventListener("updatefound", () => {
+      const installingWorker = registration.installing;
+      if (!installingWorker) return;
+      installingWorker.addEventListener("statechange", () => {
+        if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+          showUpdateBanner();
+        }
+      });
+    });
+  }
+
+  async function checkForAppUpdates() {
+    const button = $("checkUpdatesButton");
+    const originalLabel = button.textContent;
+    button.disabled = true;
+    button.textContent = "Checking for updates...";
+
+    try {
+      if (!("serviceWorker" in navigator)) {
+        showToast("App updates are not supported in this browser.");
+        return;
+      }
+
+      let registration = serviceWorkerRegistration || await navigator.serviceWorker.getRegistration();
+      if (!registration) registration = await navigator.serviceWorker.register("./sw.js");
+      serviceWorkerRegistration = registration;
+      watchServiceWorker(registration);
+      await registration.update();
+
+      if (registration.waiting) {
+        showUpdateBanner();
+        showToast("A new version is ready to install.");
+      } else if (registration.installing) {
+        showToast("Checking for an update. A prompt will appear if one is found.");
+      } else {
+        showToast("You're using the latest version.");
+      }
+    } catch {
+      showToast(navigator.onLine ? "Could not check for updates. Please try again." : "Connect to the internet to check for updates.");
+    } finally {
+      button.disabled = false;
+      button.textContent = originalLabel;
+    }
+  }
+
+  $("checkUpdatesButton").addEventListener("click", checkForAppUpdates);
+  $("dismissUpdate").addEventListener("click", () => $("updateBanner").classList.add("hidden"));
+  $("applyUpdate").addEventListener("click", () => {
+    applyingUpdate = true;
+    $("applyUpdate").disabled = true;
+    $("applyUpdate").textContent = "Updating...";
+    const waitingWorker = serviceWorkerRegistration && serviceWorkerRegistration.waiting;
+    if (waitingWorker) waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    else window.location.reload();
+  });
+
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (applyingUpdate) window.location.reload();
+    });
+
+    window.addEventListener("load", async () => {
+      try {
+        serviceWorkerRegistration = await navigator.serviceWorker.register("./sw.js");
+        watchServiceWorker(serviceWorkerRegistration);
+      } catch {
+        // The app remains usable even if service worker registration is unavailable.
+      }
+    });
+  }
+
+  const intro = $("appIntro");
+  if (intro) {
+    playIntroSound();
+    window.setTimeout(() => {
+      intro.classList.add("is-leaving");
+      window.setTimeout(() => intro.remove(), 600);
+    }, 2100);
   }
 })();
