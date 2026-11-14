@@ -5,3 +5,74 @@ body.dark{--bg:#151515;--surface:#202020;--surface-2:#292929;--text:#f2f2ef;--mu
 @media(max-width:1100px){.main-content{padding:0 28px}.studio-layout{grid-template-columns:1fr}.preview-column{position:static}.preview-stage{min-height:370px}.flat-preview{min-height:370px}.wardrobe-grid,.saved-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.sidebar{transform:translateX(-100%);transition:.25s;box-shadow:none}.sidebar.open{transform:translateX(0);box-shadow:10px 0 30px #0002}.main-content{margin-left:0;padding:0 17px}.topbar{height:62px;gap:10px}.mobile-menu{display:block}.breadcrumb{margin-right:auto;font-size:10px}.today-pill{display:none}.page{padding:30px 0 40px}.welcome-row,.page-heading{align-items:flex-start;flex-direction:column}.welcome-row h1{font-size:37px}.welcome-row .primary-btn{width:100%}.stats-grid{gap:8px;margin:28px 0 34px}.stat-card{padding:13px 11px}.stat-card>strong{font-size:22px}.stat-card>small{font-size:9px}.stat-top{font-size:9px}.quick-grid{grid-template-columns:1fr}.quick-card{min-height:140px}.tip-banner{margin-top:15px}.page-heading h1{font-size:32px}.page-heading .primary-btn,.page-heading .secondary-btn{width:100%}.studio-layout{gap:13px}.panel{padding:15px}.panel-heading{align-items:flex-start;flex-direction:column}.upload-grid{gap:6px}.upload-card{min-height:130px;padding:8px 4px}.upload-card strong{font-size:9px}.upload-card small{font-size:8px}.url-row,.save-row{flex-direction:column}.url-row .secondary-btn,.save-row .primary-btn{width:100%}.preview-panel{padding:13px}.preview-stage{min-height:340px}.flat-preview{min-height:340px;padding:25px 12px;gap:8px}.flat-item{max-height:190px}.shoes-preview{height:105px}.wardrobe-grid,.saved-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wardrobe-card img{height:130px}.look-images{height:120px}.app-footer{font-size:8px}.model-preview{min-height:340px}.person{transform:scale(.88);margin-top:10px}.model-note{bottom:7px}}
 @media(max-width:390px){.stats-grid{grid-template-columns:1fr}.stat-card{display:grid;grid-template-columns:1fr auto;align-items:center}.stat-card>strong{grid-column:2;grid-row:1/3;margin:0}.stat-card>small{grid-column:1}.upload-card strong{font-size:8px}.view-btn{padding:7px 6px}}
+
+
+/* Outfit Studio redesign: the clothing slots now live inside the outfit board. */
+.studio-layout-new{display:block;max-width:1120px;margin:0 auto}
+.studio-layout-new .preview-column{position:static}
+.studio-preview-panel{padding:22px}
+.studio-title-wrap h3{margin-top:5px}
+.studio-instructions{font-size:11px;color:var(--muted);margin:7px 0 0;line-height:1.5}
+.studio-preview-stage{display:block;min-height:450px;padding:10px;background:var(--bg)}
+.studio-flat-preview{display:grid;width:100%;min-height:430px;height:100%;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr;gap:13px;padding:8px;align-items:stretch}
+.flat-item.slot-card{width:100%;height:100%;min-height:390px;max-height:none;position:relative;display:flex;align-items:center;justify-content:center;border-radius:13px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.flat-item.slot-card img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:contain;padding:48px 15px 62px;display:none}
+.flat-item.slot-card .slot-label{position:absolute;top:13px;left:13px;right:13px;z-index:2;font-size:8px;letter-spacing:1.2px;font-weight:700;color:var(--muted);text-align:left}
+.slot-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;color:var(--muted);padding:35px 10px}
+.slot-placeholder-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:50%;background:var(--surface-2);font-size:24px;color:var(--text);font-weight:400}
+.slot-placeholder strong{font-size:11px;color:var(--text)}
+.slot-placeholder small{font-size:9px;color:var(--muted)}
+.flat-item.slot-card.has-image .slot-placeholder{display:none}
+.slot-actions{position:absolute;right:12px;bottom:12px;z-index:3;display:flex;gap:7px}
+.slot-action{width:35px;height:35px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--text);font-size:19px;display:grid;place-items:center;box-shadow:0 3px 10px rgba(0,0,0,.07);transition:transform .18s,background .18s}
+.slot-action:hover{transform:translateY(-2px);background:var(--surface-2)}
+.slot-file-input{display:none!important}
+.flat-item.slot-card.shoes-preview{grid-column:auto;width:100%;height:100%;min-height:390px}
+.studio-save-panel{margin-top:15px}
+.studio-save-panel .save-row input{background:var(--bg)}
+.wardrobe-source{display:inline-block;margin-top:7px;font-size:9px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.model-controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 10px 52px}
+.model-controls>div{display:flex;align-items:center;gap:5px;padding:5px 7px;border:1px solid var(--line);background:var(--surface);border-radius:9px}
+.model-controls span{font-size:9px;color:var(--muted);margin-right:3px}
+.model-controls button{width:25px;height:25px;border:0;border-radius:50%;background:var(--surface-2);color:var(--text);font-size:15px}
+.link-modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px}
+.link-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.48)}
+.link-modal-card{position:relative;width:min(100%,440px);background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:25px;box-shadow:0 20px 70px rgba(0,0,0,.22)}
+.link-modal-card h3{font-size:20px;margin:8px 30px 8px 0}
+.modal-description{font-size:11px;color:var(--muted);line-height:1.6;margin:0 0 18px}
+.link-modal-card label{display:block;font-size:11px;font-weight:700;margin-bottom:7px}
+.link-modal-card input{width:100%;border:1px solid var(--line);border-radius:9px;padding:12px;background:var(--bg);color:var(--text);font-size:12px;outline:none}
+.link-modal-card input:focus{border-color:var(--muted)}
+.link-modal-card .helper-text{margin:9px 0 0}
+.modal-close{position:absolute;top:13px;right:14px;width:30px;height:30px;border:0;border-radius:50%;background:var(--surface-2);color:var(--text);font-size:20px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.manual-image-fallback{margin-top:16px;padding:13px;border:1px dashed var(--line);border-radius:10px}
+.manual-image-fallback .secondary-btn{margin-top:9px;width:100%}
+.link-modal-card button:disabled{opacity:.55;cursor:wait}
+@media(max-width:760px){
+  .studio-preview-panel{padding:13px}
+  .studio-preview-stage{min-height:0;padding:7px}
+  .studio-flat-preview{min-height:0;padding:4px;gap:7px}
+  .flat-item.slot-card,.flat-item.slot-card.shoes-preview{min-height:255px;height:255px}
+  .flat-item.slot-card img{padding:43px 7px 55px}
+  .flat-item.slot-card .slot-label{top:10px;left:8px;right:6px;font-size:7px;letter-spacing:.6px}
+  .slot-actions{right:7px;bottom:7px;gap:5px}
+  .slot-action{width:30px;height:30px;font-size:17px}
+  .slot-placeholder{padding:25px 5px;gap:6px}
+  .slot-placeholder-icon{width:34px;height:34px;font-size:20px}
+  .slot-placeholder strong{font-size:9px}
+  .slot-placeholder small{font-size:8px}
+  .studio-instructions{max-width:230px}
+  .preview-header{align-items:flex-start}
+  .view-switch{flex:none}
+  .model-controls{margin-bottom:48px;gap:5px}
+  .model-controls>div{padding:4px}
+  .model-controls span{font-size:8px}
+  .link-modal-card{padding:21px}
+}
+@media(max-width:390px){
+  .flat-item.slot-card,.flat-item.slot-card.shoes-preview{min-height:220px;height:220px}
+  .slot-action{width:27px;height:27px}
+  .slot-placeholder strong{font-size:8px}
+  .view-btn{padding:7px 6px}
+}
