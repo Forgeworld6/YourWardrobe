@@ -624,3 +624,144 @@ body.dark .slot-placeholder-icon{border-color:#555}
   .outfit-progress{margin-bottom:4px}
   .outfit-save-row input,.outfit-save-row .primary-btn{padding-top:7px;padding-bottom:7px}
 }
+
+
+/* Full-width mobile app layout: remove the narrow centered content column. */
+@media(max-width:760px){
+  .sketch-app-shell{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+  .app-topbar{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:16px;
+    padding-right:16px;
+  }
+  .app-main{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:9px!important;
+    padding-right:9px!important;
+    overflow-x:hidden;
+    overflow-y:auto;
+  }
+  .app-main .page{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+  .app-main .page:not(#page-home){
+    padding-left:0;
+    padding-right:0;
+  }
+  .app-main .wardrobe-grid,
+  .app-main .saved-grid{
+    width:100%;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+  }
+  .app-main .wardrobe-card,
+  .app-main .look-card{min-width:0}
+  .app-main .wardrobe-card img{
+    width:100%;
+    height:clamp(112px,34vw,160px);
+  }
+  .app-main .page#page-home.active{
+    overflow:hidden;
+  }
+}
+
+/* Remove-item action and accessible confirmation popup. */
+.wardrobe-card-info{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:7px;
+  padding:12px;
+}
+.remove-item-btn{
+  width:100%;
+  margin-top:4px;
+  padding:9px 11px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--bg);
+  color:var(--text);
+  font-size:10px;
+  font-weight:700;
+}
+.remove-item-btn:active{transform:scale(.98)}
+.remove-item-btn:focus-visible,
+.confirm-modal-actions button:focus-visible{
+  outline:2px solid var(--text);
+  outline-offset:3px;
+}
+.confirm-modal{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:grid;
+  place-items:center;
+  padding:20px;
+}
+.confirm-modal-backdrop{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+  background:rgba(0,0,0,.48);
+}
+.confirm-modal-dialog{
+  position:relative;
+  width:min(100%,360px);
+  padding:22px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--surface);
+  color:var(--text);
+  box-shadow:0 20px 60px rgba(0,0,0,.22);
+}
+.confirm-modal-icon{
+  display:grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  margin-bottom:13px;
+  border-radius:12px;
+  background:var(--surface-2);
+  color:var(--text);
+  font-size:19px;
+  font-weight:800;
+}
+.confirm-modal-dialog h2{
+  margin:0 0 8px;
+  font-size:19px;
+  letter-spacing:-.5px;
+}
+.confirm-modal-dialog p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+.confirm-modal-actions{
+  display:flex;
+  gap:9px;
+  margin-top:20px;
+}
+.confirm-modal-actions button{
+  flex:1;
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  font-size:11px;
+  font-weight:700;
+}
+.confirm-cancel{background:var(--bg);color:var(--text)}
+.confirm-remove{background:#191919;color:#fff;border-color:#191919}
+body.dark .confirm-remove{background:#eee;color:#171717;border-color:#eee}
