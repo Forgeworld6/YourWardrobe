@@ -411,7 +411,7 @@
     });
     window.addEventListener("load", async () => {
       try {
-        serviceWorkerRegistration = await navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" });
+        serviceWorkerRegistration = await navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" });
         watchServiceWorker(serviceWorkerRegistration);
         await serviceWorkerRegistration.update();
       } catch {
