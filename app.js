@@ -4,7 +4,6 @@
   const inputIds = { top: "topInput", bottom: "bottomInput", shoes: "shoesInput" };
   const state = {
     pieces: { top: null, bottom: null, shoes: null },
-    activeCategory: null,
     saved: load("yw_saved", []),
     wardrobe: load("yw_wardrobe", [])
   };
@@ -182,185 +181,30 @@
     });
   });
 
-  // Delegate these controls from the document so taps work consistently on mobile browsers.
-  document.addEventListener("click", event => {
-    const clicked = event.target && event.target.closest
-      ? event.target.closest("[data-gallery], [data-link]")
-      : null;
-    if (!clicked) return;
-
-    if (clicked.dataset.gallery) {
-      event.preventDefault();
-      const input = $(inputIds[clicked.dataset.gallery]);
+  // The large plus area in each preview opens that item's gallery picker.
+  document.querySelectorAll(".slot-visual[data-gallery]").forEach(control => {
+    const openGallery = () => {
+      const key = control.dataset.gallery;
+      const input = $(inputIds[key]);
       if (!input) {
         showToast("The gallery picker is unavailable for this item.");
         return;
       }
-      // Reset first so selecting the same photo again still fires the change event.
       input.value = "";
-      try {
-        input.click();
-      } catch {
-        showToast("Could not open your gallery. Please try again.");
-      }
-      return;
-    }
-
-    if (clicked.dataset.link) {
-      event.preventDefault();
-      openLinkModal(clicked.dataset.link);
-    }
-  });
-
-  function openLinkModal(key) {
-    state.activeCategory = key;
-    $("linkModalTitle").textContent = "Add " + categoryNames[key] + " from a link";
-    $("productUrl").value = "";
-    $("manualImageUrl").value = "";
-    $("manualImageFallback").classList.add("hidden");
-    $("linkHelp").textContent = "Paste a public product page link. We'll try to find its main image.";
-    $("addUrl").disabled = false;
-    $("addUrl").textContent = "Find product image";
-    $("useDirectImage").disabled = false;
-    $("useDirectImage").textContent = "Use this image";
-    $("linkModal").classList.remove("hidden");
-    $("productUrl").focus();
-  }
-
-  function closeLinkModal() {
-    $("linkModal").classList.add("hidden");
-    state.activeCategory = null;
-  }
-
-
-  $("closeLinkModal").addEventListener("click", closeLinkModal);
-  $("cancelLink").addEventListener("click", closeLinkModal);
-  $("linkModalBackdrop").addEventListener("click", closeLinkModal);
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && !$("linkModal").classList.contains("hidden")) closeLinkModal();
-  });
-
-  function verifyImage(url) {
-    return new Promise(resolve => {
-      const image = new Image();
-      let finished = false;
-      const timer = setTimeout(() => {
-        if (!finished) {
-          finished = true;
-          resolve(false);
-        }
-      }, 10000);
-      image.onload = () => {
-        if (!finished) {
-          finished = true;
-          clearTimeout(timer);
-          resolve(true);
-        }
-      };
-      image.onerror = () => {
-        if (!finished) {
-          finished = true;
-          clearTimeout(timer);
-          resolve(false);
-        }
-      };
-      image.src = url;
-    });
-  }
-
-  async function getProductImage(productUrl) {
-    if (/\.(png|jpe?g|webp|avif)(?:[?#]|$)/i.test(productUrl)) return { image: productUrl, title: "" };
-    const endpoint = "https://api.microlink.io/?url=" + encodeURIComponent(productUrl) + "&filter=title,image,url";
-    const response = await fetch(endpoint);
-    if (!response.ok) throw new Error("Product preview service is unavailable.");
-    const result = await response.json();
-    const imageUrl = result && result.data && result.data.image && result.data.image.url;
-    if (result.status !== "success" || !imageUrl) throw new Error("No product image was found.");
-    return { image: imageUrl, title: result.data.title || "" };
-  }
-
-  async function addProductLink() {
-    const rawUrl = $("productUrl").value.trim();
-    let parsed;
-    try {
-      parsed = new URL(rawUrl);
-      if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("Invalid protocol");
-    } catch {
-      $("linkHelp").textContent = "Enter a valid product page link starting with https://";
-      $("productUrl").focus();
-      return;
-    }
-
-    const key = state.activeCategory;
-    if (!key) return;
-    const button = $("addUrl");
-    button.disabled = true;
-    button.textContent = "Finding image...";
-    $("linkHelp").textContent = "Checking the product page for its main image. This can take a few seconds.";
-
-    try {
-      const result = await getProductImage(parsed.href);
-      if (!await verifyImage(result.image)) throw new Error("The image could not be loaded.");
-      const piece = {
-        name: result.title || parsed.hostname.replace(/^www\./, ""),
-        data: result.image,
-        category: categoryNames[key],
-        source: "link",
-        sourceUrl: parsed.href
-      };
-      state.pieces[key] = piece;
-      updatePreview();
-      addToWardrobe(piece);
-      closeLinkModal();
-      showToast(categoryNames[key] + " image added.");
-    } catch {
-      $("manualImageFallback").classList.remove("hidden");
-      $("linkHelp").textContent = "This store did not provide a usable image preview. Paste a direct image URL below, or use ＋ to choose a photo.";
-      button.disabled = false;
-      button.textContent = "Try again";
-    }
-  }
-
-  $("addUrl").addEventListener("click", addProductLink);
-  $("productUrl").addEventListener("keydown", event => {
-    if (event.key === "Enter") addProductLink();
-  });
-
-  $("useDirectImage").addEventListener("click", async () => {
-    const rawImageUrl = $("manualImageUrl").value.trim();
-    let parsedImage;
-    try {
-      parsedImage = new URL(rawImageUrl);
-      if (!["http:", "https:"].includes(parsedImage.protocol)) throw new Error("Invalid protocol");
-    } catch {
-      $("linkHelp").textContent = "Enter a valid direct image link starting with https://";
-      return;
-    }
-    const button = $("useDirectImage");
-    button.disabled = true;
-    button.textContent = "Checking image...";
-    if (!await verifyImage(parsedImage.href)) {
-      $("linkHelp").textContent = "That image link could not be opened. Check the link or choose a photo from your gallery.";
-      button.disabled = false;
-      button.textContent = "Use this image";
-      return;
-    }
-    const key = state.activeCategory;
-    if (!key) return;
-    let sourceUrl = $("productUrl").value.trim();
-    try { sourceUrl = sourceUrl ? new URL(sourceUrl).href : parsedImage.href; } catch { sourceUrl = parsedImage.href; }
-    const piece = {
-      name: parsedImage.hostname.replace(/^www\./, ""),
-      data: parsedImage.href,
-      category: categoryNames[key],
-      source: "link",
-      sourceUrl
+      input.click();
     };
-    state.pieces[key] = piece;
-    updatePreview();
-    addToWardrobe(piece);
-    closeLinkModal();
-    showToast(categoryNames[key] + " image added.");
+
+    control.addEventListener("click", event => {
+      event.preventDefault();
+      openGallery();
+    });
+
+    control.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openGallery();
+      }
+    });
   });
 
   $("saveLook").addEventListener("click", () => {
