@@ -248,3 +248,11 @@ body.dark .slot-placeholder-icon{border-color:#555}
 @media(prefers-reduced-motion:reduce){
   .outfit-slot,.slot-action,.bottom-nav-item{transition:none!important}
 }
+
+
+/* Fix inherited absolute positioning from the previous Outfit Studio layout. */
+.outfit-slot{position:relative}
+.outfit-slot .slot-tools{position:static;min-width:0}
+.outfit-slot .slot-actions{position:static;inset:auto;z-index:auto;display:flex;gap:9px;pointer-events:auto}
+.outfit-slot .slot-action{position:relative;z-index:2;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.outfit-slot .slot-file-input{display:none!important}
