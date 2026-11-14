@@ -11,6 +11,16 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+  <div class="app-intro" id="appIntro" role="status" aria-label="YourWardrobe is opening">
+    <div class="intro-inner">
+      <div class="intro-mark">Y</div>
+      <div class="intro-name">YourWardrobe</div>
+      <p class="intro-tagline">Build your look. Find your style.</p>
+      <div class="intro-progress"><span></span></div>
+      <button class="intro-sound-button" type="button" id="introSoundButton">♫ Play intro sound</button>
+    </div>
+  </div>
+
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#" aria-label="YourWardrobe home">
@@ -29,6 +39,8 @@
           <span class="note-dot"></span>
           <div><strong>Your style, your space.</strong><small>Build a look that feels like you.</small></div>
         </div>
+        <button class="nav-item" id="soundToggle" type="button"><span class="nav-icon">♫</span> Sound effects <span class="setting-state" id="soundStatus">On</span></button>
+        <button class="nav-item" id="checkUpdatesButton" type="button"><span class="nav-icon">↻</span> Check for updates</button>
         <button class="nav-item" id="themeToggle"><span class="nav-icon">◐</span> Switch theme</button>
       </div>
     </aside>
@@ -201,6 +213,16 @@
 
       <footer class="app-footer"><span>YourWardrobe</span><span>Build your look. Find your style.</span></footer>
     </main>
+  </div>
+  <div class="update-banner hidden" id="updateBanner" role="status" aria-live="polite">
+    <div class="update-banner-copy">
+      <strong>Update available</strong>
+      <span>A newer version of YourWardrobe is ready.</span>
+    </div>
+    <div class="update-banner-actions">
+      <button type="button" id="dismissUpdate">Later</button>
+      <button type="button" id="applyUpdate">Update now</button>
+    </div>
   </div>
   <div class="link-modal hidden" id="linkModal">
     <div class="link-modal-backdrop" id="linkModalBackdrop"></div>
