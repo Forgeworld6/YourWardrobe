@@ -233,6 +233,35 @@
     showToast("Outfit cleared.");
   });
 
+  // Mix one random saved wardrobe item into each category that has options.
+  $("mixOutfit").addEventListener("click", () => {
+    let mixedCount = 0;
+
+    Object.keys(inputIds).forEach(key => {
+      const choices = state.wardrobe.filter(item =>
+        item.category === categoryNames[key] && item.data
+      );
+      if (!choices.length) return;
+
+      const currentData = state.pieces[key] && state.pieces[key].data;
+      const alternatives = choices.filter(item => item.data !== currentData);
+      const pool = alternatives.length ? alternatives : choices;
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+
+      state.pieces[key] = { ...chosen };
+      mixedCount++;
+    });
+
+    if (!mixedCount) {
+      showToast("Add clothing photos first to use Mix saved items.");
+      return;
+    }
+
+    updatePreview();
+    $("studioMessage").textContent = "A fresh mix from your saved items is ready.";
+    showToast("Your outfit has been mixed!");
+  });
+
   function renderWardrobe() {
     const grid = $("wardrobeGrid");
     if (!state.wardrobe.length) {
