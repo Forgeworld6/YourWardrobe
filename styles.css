@@ -765,3 +765,23 @@ body.dark .slot-placeholder-icon{border-color:#555}
 .confirm-cancel{background:var(--bg);color:var(--text)}
 .confirm-remove{background:#191919;color:#fff;border-color:#191919}
 body.dark .confirm-remove{background:#eee;color:#171717;border-color:#eee}
+
+
+/* Mix saved wardrobe pieces from the Home screen. */
+.mix-outfit-btn{
+  margin-left:auto;
+  flex:none;
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:6px 9px;
+  background:var(--surface);
+  color:var(--text);
+  font-size:9px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.mix-outfit-btn:active{transform:scale(.97)}
+.mix-outfit-btn:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+@media(max-width:360px){
+  .mix-outfit-btn{padding:5px 7px;font-size:8px}
+}
