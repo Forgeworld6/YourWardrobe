@@ -14,6 +14,8 @@
   let serviceWorkerRegistration = null;
   let watchedRegistration = null;
   let applyingUpdate = false;
+  let pendingWardrobeDeleteId = null;
+  let lastDeleteTrigger = null;
 
   function load(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; }
@@ -238,14 +240,65 @@
       grid.querySelector("[data-go]").addEventListener("click", () => go("home"));
       return;
     }
+
+    let addedLegacyIds = false;
+    state.wardrobe.forEach((item, index) => {
+      if (item.id === undefined || item.id === null) {
+        item.id = "legacy-" + index + "-" + String(item.name || "item");
+        addedLegacyIds = true;
+      }
+    });
+    if (addedLegacyIds) persist();
+
     grid.innerHTML = state.wardrobe.map(item => {
       const productLink = item.sourceUrl
         ? '<a class="wardrobe-source" href="' + safeText(item.sourceUrl) + '" target="_blank" rel="noopener noreferrer">View product ↗</a>'
         : "";
-      return '<article class="wardrobe-card"><img src="' + safeText(item.data) + '" alt="' + safeText(item.category) + '" /><div><strong>' +
-        safeText(item.name) + '</strong><small>' + safeText(item.category) + '</small>' + productLink + '</div></article>';
+      return '<article class="wardrobe-card"><img src="' + safeText(item.data) + '" alt="' + safeText(item.category) + '" /><div class="wardrobe-card-info"><strong>' +
+        safeText(item.name) + '</strong><small>' + safeText(item.category) + '</small>' + productLink +
+        '<button class="remove-item-btn" data-remove-item="' + safeText(item.id) + '" type="button">Remove</button></div></article>';
     }).join("");
+
+    grid.querySelectorAll("[data-remove-item]").forEach(button => button.addEventListener("click", () => {
+      const item = state.wardrobe.find(entry => String(entry.id) === button.dataset.removeItem);
+      if (!item) return;
+      pendingWardrobeDeleteId = button.dataset.removeItem;
+      lastDeleteTrigger = button;
+      $("confirmDeleteMessage").textContent = 'Remove "' + item.name + '" from Items used?';
+      $("confirmDeleteModal").classList.remove("hidden");
+      $("cancelDeleteItem").focus();
+    }));
   }
+
+  function closeWardrobeDeleteDialog() {
+    $("confirmDeleteModal").classList.add("hidden");
+    pendingWardrobeDeleteId = null;
+    if (lastDeleteTrigger && lastDeleteTrigger.isConnected) lastDeleteTrigger.focus();
+    lastDeleteTrigger = null;
+  }
+
+  $("cancelDeleteItem").addEventListener("click", closeWardrobeDeleteDialog);
+  $("confirmDeleteModal").addEventListener("click", event => {
+    if (event.target.matches("[data-close-delete-modal]")) closeWardrobeDeleteDialog();
+  });
+  $("confirmDeleteItem").addEventListener("click", () => {
+    if (pendingWardrobeDeleteId === null) return;
+    const item = state.wardrobe.find(entry => String(entry.id) === String(pendingWardrobeDeleteId));
+    if (!item) {
+      closeWardrobeDeleteDialog();
+      return;
+    }
+    state.wardrobe = state.wardrobe.filter(entry => String(entry.id) !== String(pendingWardrobeDeleteId));
+    persist();
+    closeWardrobeDeleteDialog();
+    renderWardrobe();
+    showToast("Item removed from Items used.");
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !$("confirmDeleteModal").classList.contains("hidden")) {
+      closeWardrobeDeleteDialog();
+    }
+  });
 
   function renderSaved() {
     const grid = $("savedGrid");
@@ -312,58 +365,44 @@
     $("updateBanner").classList.remove("hidden");
   }
 
+  let watchedInstallingWorker = null;
+
+  function watchInstallingWorker(worker, registration) {
+    if (!worker || watchedInstallingWorker === worker) return;
+    watchedInstallingWorker = worker;
+    worker.addEventListener("statechange", () => {
+      if (
+        worker.state === "installed" &&
+        navigator.serviceWorker.controller &&
+        registration.waiting === worker
+      ) {
+        showUpdateBanner();
+      }
+    });
+  }
+
   function watchServiceWorker(registration) {
     if (!registration || watchedRegistration === registration) return;
     watchedRegistration = registration;
     if (registration.waiting && navigator.serviceWorker.controller) showUpdateBanner();
+    watchInstallingWorker(registration.installing, registration);
     registration.addEventListener("updatefound", () => {
-      const installingWorker = registration.installing;
-      if (!installingWorker) return;
-      installingWorker.addEventListener("statechange", () => {
-        if (installingWorker.state === "installed" && navigator.serviceWorker.controller) showUpdateBanner();
-      });
+      watchInstallingWorker(registration.installing, registration);
     });
   }
 
-  async function checkForAppUpdates() {
-    const button = $("checkUpdatesButton");
-    button.disabled = true;
-    const label = button.querySelector("strong");
-    const originalLabel = label ? label.textContent : "Check for updates";
-    if (label) label.textContent = "Checking for updates...";
-    try {
-      if (!("serviceWorker" in navigator)) {
-        showToast("App updates are not supported in this browser.");
-        return;
-      }
-      let registration = serviceWorkerRegistration || await navigator.serviceWorker.getRegistration();
-      if (!registration) registration = await navigator.serviceWorker.register("./sw.js");
-      serviceWorkerRegistration = registration;
-      watchServiceWorker(registration);
-      await registration.update();
-      if (registration.waiting) {
-        showUpdateBanner();
-        showToast("A new version is ready to install.");
-      } else if (registration.installing) {
-        showToast("Checking for an update. A prompt will appear if one is found.");
-      } else showToast("You're using the latest version.");
-    } catch {
-      showToast(navigator.onLine ? "Could not check for updates. Please try again." : "Connect to the internet to check for updates.");
-    } finally {
-      button.disabled = false;
-      if (label) label.textContent = originalLabel;
-    }
-  }
-
-  $("checkUpdatesButton").addEventListener("click", checkForAppUpdates);
   $("dismissUpdate").addEventListener("click", () => $("updateBanner").classList.add("hidden"));
   $("applyUpdate").addEventListener("click", () => {
+    const waitingWorker = serviceWorkerRegistration && serviceWorkerRegistration.waiting;
+    if (!waitingWorker) {
+      $("updateBanner").classList.add("hidden");
+      showToast("YourWardrobe is already up to date.");
+      return;
+    }
     applyingUpdate = true;
     $("applyUpdate").disabled = true;
     $("applyUpdate").textContent = "Updating...";
-    const waitingWorker = serviceWorkerRegistration && serviceWorkerRegistration.waiting;
-    if (waitingWorker) waitingWorker.postMessage({ type: "SKIP_WAITING" });
-    else window.location.reload();
+    waitingWorker.postMessage({ type: "SKIP_WAITING" });
   });
 
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
@@ -372,8 +411,9 @@
     });
     window.addEventListener("load", async () => {
       try {
-        serviceWorkerRegistration = await navigator.serviceWorker.register("./sw.js");
+        serviceWorkerRegistration = await navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" });
         watchServiceWorker(serviceWorkerRegistration);
+        await serviceWorkerRegistration.update();
       } catch {
         // The app remains usable if service worker registration is unavailable.
       }
