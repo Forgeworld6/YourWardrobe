@@ -183,31 +183,8 @@
     });
   });
 
-  // The large plus area in each preview opens that item's gallery picker.
-  document.querySelectorAll(".slot-visual[data-gallery]").forEach(control => {
-    const openGallery = () => {
-      const key = control.dataset.gallery;
-      const input = $(inputIds[key]);
-      if (!input) {
-        showToast("The gallery picker is unavailable for this item.");
-        return;
-      }
-      input.value = "";
-      input.click();
-    };
-
-    control.addEventListener("click", event => {
-      event.preventDefault();
-      openGallery();
-    });
-
-    control.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openGallery();
-      }
-    });
-  });
+  // Gallery inputs are activated directly by their associated labels in index.html.
+  // This avoids programmatic file-input clicks, which some Android WebViews block.
 
   $("saveLook").addEventListener("click", () => {
     const pieces = Object.entries(state.pieces)
