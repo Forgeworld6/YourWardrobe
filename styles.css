@@ -26,7 +26,6 @@ body.dark{--bg:#151515;--surface:#202020;--surface-2:#292929;--text:#f2f2ef;--mu
 .slot-actions{position:absolute;right:12px;bottom:12px;z-index:3;display:flex;gap:7px}
 .slot-action{width:35px;height:35px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--text);font-size:19px;display:grid;place-items:center;box-shadow:0 3px 10px rgba(0,0,0,.07);transition:transform .18s,background .18s}
 .slot-action:hover{transform:translateY(-2px);background:var(--surface-2)}
-.slot-file-input{display:none!important}
 .flat-item.slot-card.shoes-preview{grid-column:auto;width:100%;height:100%;min-height:390px}
 .studio-save-panel{margin-top:15px}
 .studio-save-panel .save-row input{background:var(--bg)}
@@ -149,7 +148,6 @@ body.dark{--bg:#151515;--surface:#202020;--surface-2:#292929;--text:#f2f2ef;--mu
 .slot-action span{font-size:19px}
 .slot-action:hover{background:var(--surface-2);transform:translateY(-1px)}
 .slot-action:active{transform:scale(.96)}
-.slot-file-input{display:none!important}
 .outfit-save-area{margin-top:15px;padding:14px 2px 0}
 .outfit-progress{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px;margin-bottom:12px}
 .outfit-save-row{display:flex;gap:9px}
@@ -255,8 +253,7 @@ body.dark .slot-placeholder-icon{border-color:#555}
 .outfit-slot .slot-tools{position:static;min-width:0}
 .outfit-slot .slot-actions{position:static;inset:auto;z-index:auto;display:flex;gap:9px;pointer-events:auto}
 .outfit-slot .slot-action{position:relative;z-index:2;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.outfit-slot .slot-file-input{display:none!important}
-
+.outfit-slot 
 
 /* Gallery-only outfit board: large preview plus areas are the sole add controls. */
 .outfit-slot{
