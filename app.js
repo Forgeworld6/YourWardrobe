@@ -241,14 +241,20 @@
 
   function renderWardrobe() {
     const grid = $("wardrobeGrid");
-    if (!state.wardrobe.length) {
-      grid.innerHTML = '<div class="empty-card"><span>▤</span><strong>No items yet</strong><p>Items you add to an outfit will appear here.</p><button class="secondary-btn" data-go="home">Add your first item</button></div>';
+    const shirts = state.wardrobe.filter(item => /top|shirt/i.test(String(item.category || "")));
+    const pants = state.wardrobe.filter(item => /bottom|pant|trouser/i.test(String(item.category || "")));
+    const visibleItems = [...shirts, ...pants];
+
+    $("wardrobeCount").textContent = visibleItems.length + (visibleItems.length === 1 ? " item" : " items");
+
+    if (!visibleItems.length) {
+      grid.innerHTML = '<div class="empty-card"><span>▤</span><strong>No shirts or pants yet</strong><p>Shirts and pants you add to an outfit will appear here. Shoes are kept out of this view.</p><button class="secondary-btn" data-go="home">Add your first item</button></div>';
       grid.querySelector("[data-go]").addEventListener("click", () => go("home"));
       return;
     }
 
     let addedLegacyIds = false;
-    state.wardrobe.forEach((item, index) => {
+    visibleItems.forEach((item, index) => {
       if (item.id === undefined || item.id === null) {
         item.id = "legacy-" + index + "-" + String(item.name || "item");
         addedLegacyIds = true;
@@ -256,14 +262,22 @@
     });
     if (addedLegacyIds) persist();
 
-    grid.innerHTML = state.wardrobe.map(item => {
-      const productLink = item.sourceUrl
-        ? '<a class="wardrobe-source" href="' + safeText(item.sourceUrl) + '" target="_blank" rel="noopener noreferrer">View product ↗</a>'
-        : "";
-      return '<article class="wardrobe-card"><img src="' + safeText(item.data) + '" alt="' + safeText(item.category) + '" /><div class="wardrobe-card-info"><strong>' +
-        safeText(item.name) + '</strong><small>' + safeText(item.category) + '</small>' + productLink +
-        '<button class="remove-item-btn" data-remove-item="' + safeText(item.id) + '" type="button">Remove</button></div></article>';
-    }).join("");
+    const renderColumn = (title, items, emptyMessage) => {
+      const cards = items.length ? items.map(item => {
+        const productLink = item.sourceUrl
+          ? '<a class="wardrobe-source" href="' + safeText(item.sourceUrl) + '" target="_blank" rel="noopener noreferrer">View product ↗</a>'
+          : "";
+        return '<article class="wardrobe-card"><img src="' + safeText(item.data) + '" alt="' + safeText(item.category) + '" /><div class="wardrobe-card-info"><strong>' +
+          safeText(item.name) + '</strong><small>' + safeText(item.category) + '</small>' + productLink +
+          '<button class="remove-item-btn" data-remove-item="' + safeText(item.id) + '" type="button">Remove</button></div></article>';
+      }).join("") : '<div class="wardrobe-column-empty">' + emptyMessage + '</div>';
+      return '<section class="wardrobe-column"><h2 class="wardrobe-column-title">' + title + '<span>' + items.length + '</span></h2><div class="wardrobe-column-list">' + cards + '</div></section>';
+    };
+
+    grid.innerHTML = '<div class="wardrobe-columns">' +
+      renderColumn("SHIRTS", shirts, "No shirts yet") +
+      renderColumn("PANTS", pants, "No pants yet") +
+      '</div>';
 
     grid.querySelectorAll("[data-remove-item]").forEach(button => button.addEventListener("click", () => {
       const item = state.wardrobe.find(entry => String(entry.id) === button.dataset.removeItem);
