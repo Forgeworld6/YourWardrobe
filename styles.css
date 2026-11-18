@@ -958,3 +958,60 @@ body.dark .confirm-remove{background:#eee;color:#171717;border-color:#eee}
   min-height:38px;
   margin:0!important;
 }
+
+
+/* Home screen: remove the intro sound pill and use the full available phone height. */
+.intro-sound-button{display:none!important}
+@media(max-width:600px){
+  .app-main .page#page-home.active{
+    display:flex;
+    flex-direction:column;
+    box-sizing:border-box;
+    min-height:calc(100dvh - 138px - env(safe-area-inset-bottom));
+    padding:15px 0 12px;
+    overflow:visible;
+  }
+  .app-main .page#page-home .home-heading{
+    flex:none;
+    margin-bottom:12px;
+  }
+  .app-main .page#page-home .outfit-board{
+    display:flex;
+    flex:1 1 auto;
+    flex-direction:column;
+    min-height:390px;
+    padding:3px 12px;
+  }
+  .app-main .page#page-home .outfit-slot{
+    flex:1 1 0;
+    min-height:0;
+    grid-template-columns:minmax(0,1fr) 112px;
+    padding:8px 0;
+  }
+  .app-main .page#page-home .slot-visual{
+    height:100%;
+    min-height:90px;
+  }
+  .app-main .page#page-home .outfit-save-area{
+    flex:none;
+    margin-top:10px;
+    padding-top:8px;
+  }
+  .app-main .page#page-home .outfit-progress{
+    margin-bottom:8px;
+  }
+  .app-main .page#page-home .outfit-save-row{
+    flex-direction:column;
+    gap:7px;
+  }
+  .app-main .page#page-home .outfit-save-row input,
+  .app-main .page#page-home .outfit-save-row .primary-btn{
+    width:100%;
+    min-height:44px;
+  }
+}
+@media(max-height:760px) and (max-width:600px){
+  .app-main .page#page-home.active{min-height:calc(100dvh - 128px - env(safe-area-inset-bottom));}
+  .app-main .page#page-home .outfit-board{min-height:330px;}
+  .app-main .page#page-home .home-heading{margin-bottom:8px;}
+}
