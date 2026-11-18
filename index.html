@@ -29,6 +29,7 @@
         <span class="brand-name">YourWardrobe</span>
       </a>
       <span class="topbar-caption">YOUR PERSONAL OUTFIT SPACE</span>
+      <button class="notification-button" id="notificationButton" type="button" aria-label="Notifications"><span aria-hidden="true">♧</span><i class="notification-dot hidden" id="notificationDot"></i></button>
     </header>
 
     <main class="main-content app-main">
@@ -89,6 +90,14 @@
           </div>
           <p class="status-message" id="studioMessage" aria-live="polite"></p>
         </div>
+      </section>
+
+      <section class="page" id="page-notifications">
+        <div class="page-heading">
+          <div><p class="eyebrow">YOUR UPDATES</p><h1>Notifications</h1><p class="subheading">App updates and announcements will appear here.</p></div>
+          <button class="secondary-btn" id="markNotificationsRead" type="button">Mark all as read</button>
+        </div>
+        <div class="notifications-list" id="notificationsList"><div class="empty-card"><span>♧</span><strong>You're all caught up</strong><p>New updates and announcements will appear here.</p></div></div>
       </section>
 
       <section class="page" id="page-saved">
