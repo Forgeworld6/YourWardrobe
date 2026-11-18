@@ -1015,3 +1015,34 @@ body.dark .confirm-remove{background:#eee;color:#171717;border-color:#eee}
   .app-main .page#page-home .outfit-board{min-height:330px;}
   .app-main .page#page-home .home-heading{margin-bottom:8px;}
 }
+
+
+/* In-app notifications and unread badge. */
+.app-topbar{position:relative}
+.notification-button{
+  position:relative;flex:none;width:40px;height:40px;margin-left:auto;
+  display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;
+  background:var(--surface);color:var(--text);font-size:23px;line-height:1
+}
+.notification-button:active{transform:scale(.96)}
+.notification-dot{
+  position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;
+  background:#e53935;border:2px solid var(--surface)
+}
+.notifications-list{display:grid;gap:10px}
+.notification-card{
+  display:flex;align-items:flex-start;gap:12px;padding:16px;
+  border:1px solid var(--line);border-radius:13px;background:var(--surface)
+}
+.notification-card.unread{border-color:var(--text)}
+.notification-symbol{display:grid;place-items:center;flex:none;width:32px;height:32px;
+  border-radius:10px;background:var(--surface-2);font-size:23px;line-height:1}
+.notification-copy{min-width:0;flex:1}
+.notification-copy strong{display:block;font-size:13px}
+.notification-copy p{margin:5px 0;color:var(--muted);font-size:11px;line-height:1.5}
+.notification-copy small{color:var(--muted);font-size:9px}
+.notification-unread-label{flex:none;color:#d93636;font-size:9px;font-weight:800;letter-spacing:.5px}
+@media(max-width:600px){
+  .app-topbar .topbar-caption{display:none}
+  .notification-button{width:36px;height:36px;margin-left:auto}
+}
