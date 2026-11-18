@@ -101,8 +101,17 @@
 
   function go(page) {
     document.querySelectorAll(".page").forEach(el => el.classList.toggle("active", el.id === "page-" + page));
-    $("notificationButton").addEventListener("click", () => go("notifications"));
-  $("markNotificationsRead").addEventListener("click", markNotificationsRead);
+    document.querySelectorAll(".nav-item[data-page]").forEach(el => {
+      const active = el.dataset.page === page;
+      el.classList.toggle("active", active);
+      if (active) el.setAttribute("aria-current", "page");
+      else el.removeAttribute("aria-current");
+    });
+    if (page === "wardrobe") renderWardrobe();
+    if (page === "saved") renderSaved();
+    if (page === "notifications") { renderNotifications(); markNotificationsRead(); }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   function persistNotifications() {
     try { localStorage.setItem("yw_notifications", JSON.stringify(state.notifications)); } catch {}
@@ -127,7 +136,7 @@
   function renderNotifications() {
     const list = $("notificationsList");
     if (!state.notifications.length) {
-      list.innerHTML = '<div class="empty-card"><span>♧</span><strong>You\'re all caught up</strong><p>New updates and announcements will appear here.</p></div>';
+      list.innerHTML = '<div class="empty-card"><span>♧</span><strong>You\\'re all caught up</strong><p>New updates and announcements will appear here.</p></div>';
       return;
     }
     list.innerHTML = state.notifications.map(item =>
@@ -144,17 +153,8 @@
     renderNotifications();
   }
 
-  document.querySelectorAll(".nav-item[data-page]").forEach(el => {
-      const active = el.dataset.page === page;
-      el.classList.toggle("active", active);
-      if (active) el.setAttribute("aria-current", "page");
-      else el.removeAttribute("aria-current");
-    });
-    if (page === "wardrobe") renderWardrobe();
-    if (page === "saved") renderSaved();
-    if (page === "notifications") { renderNotifications(); markNotificationsRead(); }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  $("notificationButton").addEventListener("click", () => go("notifications"));
+  $("markNotificationsRead").addEventListener("click", markNotificationsRead);
 
   document.querySelectorAll(".nav-item[data-page]").forEach(button => button.addEventListener("click", () => go(button.dataset.page)));
   document.querySelectorAll("[data-go]").forEach(button => button.addEventListener("click", () => go(button.dataset.go)));
