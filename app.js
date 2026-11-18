@@ -244,15 +244,12 @@
     const shirts = state.wardrobe.filter(item => /top|shirt/i.test(String(item.category || "")));
     const pants = state.wardrobe.filter(item => /bottom|pant|trouser/i.test(String(item.category || "")));
     const visibleItems = [...shirts, ...pants];
-
     $("wardrobeCount").textContent = visibleItems.length + (visibleItems.length === 1 ? " item" : " items");
-
     if (!visibleItems.length) {
       grid.innerHTML = '<div class="empty-card"><span>▤</span><strong>No shirts or pants yet</strong><p>Shirts and pants you add to an outfit will appear here. Shoes are kept out of this view.</p><button class="secondary-btn" data-go="home">Add your first item</button></div>';
       grid.querySelector("[data-go]").addEventListener("click", () => go("home"));
       return;
     }
-
     let addedLegacyIds = false;
     visibleItems.forEach((item, index) => {
       if (item.id === undefined || item.id === null) {
@@ -261,24 +258,17 @@
       }
     });
     if (addedLegacyIds) persist();
-
     const renderColumn = (title, items, emptyMessage) => {
       const cards = items.length ? items.map(item => {
         const productLink = item.sourceUrl
-          ? '<a class="wardrobe-source" href="' + safeText(item.sourceUrl) + '" target="_blank" rel="noopener noreferrer">View product ↗</a>'
-          : "";
-        return '<article class="wardrobe-card"><img src="' + safeText(item.data) + '" alt="' + safeText(item.category) + '" /><div class="wardrobe-card-info"><strong>' +
+          ? '<a class="wardrobe-source" href="' + safeText(item.sourceUrl) + '" target="_blank" rel="noopener noreferrer">View product ↗</a>' : "";
+        return '<article class="wardrobe-card"><button class="wardrobe-image-open" type="button" data-preview-item="' + safeText(item.id) + '" aria-label="View ' + safeText(item.name) + ' full screen"><img src="' + safeText(item.data) + '" alt="' + safeText(item.category) + '" /></button><div class="wardrobe-card-info"><strong>' +
           safeText(item.name) + '</strong><small>' + safeText(item.category) + '</small>' + productLink +
           '<button class="remove-item-btn" data-remove-item="' + safeText(item.id) + '" type="button">Remove</button></div></article>';
       }).join("") : '<div class="wardrobe-column-empty">' + emptyMessage + '</div>';
       return '<section class="wardrobe-column"><h2 class="wardrobe-column-title">' + title + '<span>' + items.length + '</span></h2><div class="wardrobe-column-list">' + cards + '</div></section>';
     };
-
-    grid.innerHTML = '<div class="wardrobe-columns">' +
-      renderColumn("SHIRTS", shirts, "No shirts yet") +
-      renderColumn("PANTS", pants, "No pants yet") +
-      '</div>';
-
+    grid.innerHTML = '<div class="wardrobe-columns">' + renderColumn("SHIRTS", shirts, "No shirts yet") + renderColumn("PANTS", pants, "No pants yet") + '</div>';
     grid.querySelectorAll("[data-remove-item]").forEach(button => button.addEventListener("click", () => {
       const item = state.wardrobe.find(entry => String(entry.id) === button.dataset.removeItem);
       if (!item) return;
@@ -288,7 +278,31 @@
       $("confirmDeleteModal").classList.remove("hidden");
       $("cancelDeleteItem").focus();
     }));
+    grid.querySelectorAll("[data-preview-item]").forEach(button => button.addEventListener("click", () => {
+      const item = state.wardrobe.find(entry => String(entry.id) === button.dataset.previewItem);
+      if (!item) return;
+      const viewer = $("wardrobeImagePreview");
+      viewer.querySelector("img").src = item.data;
+      viewer.querySelector("img").alt = item.category || item.name || "Clothing item";
+      viewer.classList.remove("hidden");
+      $("closeWardrobeImagePreview").focus();
+    }));
   }
+
+  function closeWardrobeImagePreview() {
+    const viewer = $("wardrobeImagePreview");
+    if (!viewer) return;
+    viewer.classList.add("hidden");
+    const image = viewer.querySelector("img");
+    if (image) image.removeAttribute("src");
+  }
+  $("closeWardrobeImagePreview").addEventListener("click", closeWardrobeImagePreview);
+  $("wardrobeImagePreview").addEventListener("click", event => {
+    if (event.target === $("wardrobeImagePreview")) closeWardrobeImagePreview();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !$("wardrobeImagePreview").classList.contains("hidden")) closeWardrobeImagePreview();
+  });
 
   function closeWardrobeDeleteDialog() {
     $("confirmDeleteModal").classList.add("hidden");
