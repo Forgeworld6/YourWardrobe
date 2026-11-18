@@ -136,7 +136,7 @@
   function renderNotifications() {
     const list = $("notificationsList");
     if (!state.notifications.length) {
-      list.innerHTML = '<div class="empty-card"><span>♧</span><strong>You\\'re all caught up</strong><p>New updates and announcements will appear here.</p></div>';
+      list.innerHTML = '<div class="empty-card"><span>♧</span><strong>All caught up</strong><p>New updates and announcements will appear here.</p></div>';
       return;
     }
     list.innerHTML = state.notifications.map(item =>
