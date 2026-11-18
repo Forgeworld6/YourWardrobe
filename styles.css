@@ -941,3 +941,20 @@ body.dark .confirm-remove{background:#eee;color:#171717;border-color:#eee}
   .app-main .wardrobe-image-open img{height:clamp(130px,21vh,190px)}
   .app-main .wardrobe-card-info{padding:9px!important}
 }
+
+
+/* Items Used cards show the image and its action only; hide filenames and category details. */
+.app-main .wardrobe-card-info strong,
+.app-main .wardrobe-card-info small,
+.app-main .wardrobe-card-info .wardrobe-source{
+  display:none!important;
+}
+.app-main .wardrobe-card-info{
+  padding:8px!important;
+}
+.app-main .wardrobe-card-info .remove-item-btn{
+  display:block!important;
+  width:100%!important;
+  min-height:38px;
+  margin:0!important;
+}
