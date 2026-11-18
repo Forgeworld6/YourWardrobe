@@ -260,11 +260,7 @@
     if (addedLegacyIds) persist();
     const renderColumn = (title, items, emptyMessage) => {
       const cards = items.length ? items.map(item => {
-        const productLink = item.sourceUrl
-          ? '<a class="wardrobe-source" href="' + safeText(item.sourceUrl) + '" target="_blank" rel="noopener noreferrer">View product ↗</a>' : "";
-        return '<article class="wardrobe-card"><button class="wardrobe-image-open" type="button" data-preview-item="' + safeText(item.id) + '" aria-label="View ' + safeText(item.name) + ' full screen"><img src="' + safeText(item.data) + '" alt="' + safeText(item.category) + '" /></button><div class="wardrobe-card-info"><strong>' +
-          safeText(item.name) + '</strong><small>' + safeText(item.category) + '</small>' + productLink +
-          '<button class="remove-item-btn" data-remove-item="' + safeText(item.id) + '" type="button">Remove</button></div></article>';
+        return '<article class="wardrobe-card"><button class="wardrobe-image-open" type="button" data-preview-item="' + safeText(item.id) + '" aria-label="Open clothing image full screen"><img src="' + safeText(item.data) + '" alt="Clothing item" /></button><div class="wardrobe-card-info"><button class="remove-item-btn" data-remove-item="' + safeText(item.id) + '" type="button">Remove</button></div></article>';
       }).join("") : '<div class="wardrobe-column-empty">' + emptyMessage + '</div>';
       return '<section class="wardrobe-column"><h2 class="wardrobe-column-title">' + title + '<span>' + items.length + '</span></h2><div class="wardrobe-column-list">' + cards + '</div></section>';
     };
@@ -274,7 +270,7 @@
       if (!item) return;
       pendingWardrobeDeleteId = button.dataset.removeItem;
       lastDeleteTrigger = button;
-      $("confirmDeleteMessage").textContent = 'Remove "' + item.name + '" from Items used?';
+      $("confirmDeleteMessage").textContent = "Remove this item from Items used?";
       $("confirmDeleteModal").classList.remove("hidden");
       $("cancelDeleteItem").focus();
     }));
