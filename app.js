@@ -5,7 +5,8 @@
   const state = {
     pieces: { top: null, bottom: null, shoes: null },
     saved: load("yw_saved", []),
-    wardrobe: load("yw_wardrobe", [])
+    wardrobe: load("yw_wardrobe", []),
+    notifications: load("yw_notifications", [])
   };
 
   let soundEnabled = localStorage.getItem("yw_sound") !== "off";
@@ -100,7 +101,50 @@
 
   function go(page) {
     document.querySelectorAll(".page").forEach(el => el.classList.toggle("active", el.id === "page-" + page));
-    document.querySelectorAll(".nav-item[data-page]").forEach(el => {
+    $("notificationButton").addEventListener("click", () => go("notifications"));
+  $("markNotificationsRead").addEventListener("click", markNotificationsRead);
+
+  function persistNotifications() {
+    try { localStorage.setItem("yw_notifications", JSON.stringify(state.notifications)); } catch {}
+    updateNotificationDot();
+  }
+
+  function updateNotificationDot() {
+    const unread = state.notifications.some(item => !item.read);
+    $("notificationDot").classList.toggle("hidden", !unread);
+    $("notificationButton").setAttribute("aria-label", unread ? "Notifications, unread updates" : "Notifications");
+  }
+
+  function addNotification(title, message, type) {
+    const key = type || (title + message);
+    if (state.notifications.some(item => item.key === key)) return;
+    state.notifications.unshift({ id: Date.now(), key, title, message, date: new Date().toLocaleString(), read: false });
+    state.notifications = state.notifications.slice(0, 50);
+    persistNotifications();
+    renderNotifications();
+  }
+
+  function renderNotifications() {
+    const list = $("notificationsList");
+    if (!state.notifications.length) {
+      list.innerHTML = '<div class="empty-card"><span>♧</span><strong>You\'re all caught up</strong><p>New updates and announcements will appear here.</p></div>';
+      return;
+    }
+    list.innerHTML = state.notifications.map(item =>
+      '<article class="notification-card' + (item.read ? '' : ' unread') + '"><span class="notification-symbol">•</span><div class="notification-copy"><strong>' +
+      safeText(item.title) + '</strong><p>' + safeText(item.message) + '</p><small>' + safeText(item.date) + '</small></div>' +
+      (item.read ? '' : '<span class="notification-unread-label">NEW</span>') + '</article>'
+    ).join("");
+  }
+
+  function markNotificationsRead() {
+    let changed = false;
+    state.notifications.forEach(item => { if (!item.read) { item.read = true; changed = true; } });
+    if (changed) persistNotifications();
+    renderNotifications();
+  }
+
+  document.querySelectorAll(".nav-item[data-page]").forEach(el => {
       const active = el.dataset.page === page;
       el.classList.toggle("active", active);
       if (active) el.setAttribute("aria-current", "page");
@@ -108,6 +152,7 @@
     });
     if (page === "wardrobe") renderWardrobe();
     if (page === "saved") renderSaved();
+    if (page === "notifications") { renderNotifications(); markNotificationsRead(); }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -390,9 +435,11 @@
   updateThemeControls();
   updateStats();
   updatePreview();
+  updateNotificationDot();
 
   function showUpdateBanner() {
     $("updateBanner").classList.remove("hidden");
+    addNotification("YourWardrobe update available", "A newer version is ready. Tap Update now in the update banner to install it.", "service-worker-update");
   }
 
   let watchedInstallingWorker = null;
