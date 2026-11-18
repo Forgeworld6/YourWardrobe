@@ -1,4 +1,4 @@
-const CACHE_NAME = "yourwardrobe-v17";
+const CACHE_NAME = "yourwardrobe-v18";
 const APP_FILES = [
   "./",
   "./index.html",
