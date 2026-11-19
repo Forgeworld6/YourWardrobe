@@ -99,7 +99,17 @@
     playIntroSound();
   }
 
-  function go(page) {
+  // Keep in-app navigation in browser history so Android's Back button
+  // returns to the previous page instead of closing the app.
+  function go(page, options = {}) {
+    const target = document.getElementById("page-" + page);
+    if (!target) return;
+
+    if (!options.fromHistory) {
+      const current = history.state && history.state.ywPage;
+      if (current !== page) history.pushState({ ywPage: page }, "", "#"+page);
+    }
+
     document.querySelectorAll(".page").forEach(el => el.classList.toggle("active", el.id === "page-" + page));
     document.querySelectorAll(".nav-item[data-page]").forEach(el => {
       const active = el.dataset.page === page;
@@ -110,8 +120,16 @@
     if (page === "wardrobe") renderWardrobe();
     if (page === "saved") renderSaved();
     if (page === "notifications") { renderNotifications(); markNotificationsRead(); }
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!options.fromHistory) window.scrollTo({ top: 0, behavior: "smooth" });
   }
+
+  const initialPage = location.hash.replace(/^#/, "");
+  const validInitialPage = document.getElementById("page-" + initialPage) ? initialPage : "home";
+  history.replaceState({ ywPage: validInitialPage }, "", validInitialPage === "home" ? location.pathname + location.search : "#"+validInitialPage);
+  window.addEventListener("popstate", event => {
+    const previousPage = event.state && event.state.ywPage;
+    go(document.getElementById("page-" + previousPage) ? previousPage : "home", { fromHistory: true });
+  });
 
   function persistNotifications() {
     try { localStorage.setItem("yw_notifications", JSON.stringify(state.notifications)); } catch {}
