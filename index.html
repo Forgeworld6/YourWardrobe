@@ -40,7 +40,7 @@
             <h1>Build your outfit</h1>
             <p class="subheading">Tap any row to add or change its photo from your gallery.</p>
           </div>
-          <button class="clear-studio-btn" type="button" id="clearStudio">Clear all</button>
+          <div class="home-heading-actions"><button class="secondary-btn" type="button" data-go="studio">3D Virtual Studio ↗</button><button class="clear-studio-btn" type="button" id="clearStudio">Clear all</button></div>
         </div>
 
         <div class="outfit-board" aria-label="Outfit items">
@@ -89,6 +89,46 @@
             <button class="primary-btn" id="saveLook" type="button">♡ Save outfit</button>
           </div>
           <p class="status-message" id="studioMessage" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="page virtual-studio-page" id="page-studio">
+        <div class="page-heading">
+          <div><p class="eyebrow">YOUR VIRTUAL FITTING ROOM</p><h1>3D Virtual Studio</h1><p class="subheading">Choose an avatar and explore your outfit in 3D.</p></div>
+        </div>
+        <div class="virtual-studio-layout">
+          <div class="virtual-stage-card">
+            <div class="virtual-stage-toolbar">
+              <span class="studio-live-label"><i></i> 3D PREVIEW</span>
+              <div class="avatar-switch" role="group" aria-label="Choose avatar">
+                <button type="button" class="avatar-choice active" data-avatar="male">Male</button>
+                <button type="button" class="avatar-choice" data-avatar="female">Female</button>
+              </div>
+            </div>
+            <div class="virtual-canvas-wrap" id="virtualCanvasWrap">
+              <canvas id="virtualCanvas" aria-label="Interactive 3D avatar preview"></canvas>
+              <div class="virtual-loading" id="virtualLoading">Preparing 3D preview…</div>
+            </div>
+            <div class="virtual-controls">
+              <button type="button" id="rotateLeft" aria-label="Rotate left">↶</button>
+              <button type="button" id="viewFront">Front</button>
+              <button type="button" id="viewSide">Side</button>
+              <button type="button" id="viewBack">Back</button>
+              <button type="button" id="rotateRight" aria-label="Rotate right">↷</button>
+              <button type="button" id="zoomIn" aria-label="Zoom in">＋</button>
+              <button type="button" id="zoomOut" aria-label="Zoom out">－</button>
+            </div>
+            <p class="virtual-hint">Drag to rotate · Pinch or use + / − to zoom</p>
+          </div>
+          <aside class="virtual-outfit-card">
+            <p class="eyebrow">CURRENT OUTFIT</p>
+            <h2>Your selected clothes</h2>
+            <div class="virtual-item-row"><span>TOP</span><strong id="virtualTopStatus">Not selected</strong></div>
+            <div class="virtual-item-row"><span>PANTS</span><strong id="virtualBottomStatus">Not selected</strong></div>
+            <div class="virtual-item-row"><span>FOOTWEAR</span><strong id="virtualShoesStatus">Not selected</strong></div>
+            <button class="primary-btn" id="syncVirtualOutfit" type="button">Use Home outfit</button>
+            <p class="virtual-disclaimer">This first preview uses a temporary 3D mannequin. Realistic avatar and garment models will be integrated in the next development stage.</p>
+          </aside>
         </div>
       </section>
 
