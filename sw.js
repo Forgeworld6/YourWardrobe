@@ -1,4 +1,4 @@
-const CACHE_NAME = "yourwardrobe-v24";
+const CACHE_NAME = "yourwardrobe-v25";
 const APP_FILES = [
   "./",
   "./index.html",
@@ -13,6 +13,7 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(APP_FILES))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -41,8 +42,9 @@ self.addEventListener("fetch", event => {
   const requestUrl = new URL(request.url);
   if (requestUrl.origin !== self.location.origin) return;
 
+  // Always ask GitHub Pages for the latest file first; use the local cache only offline.
   event.respondWith(
-    fetch(request)
+    fetch(new Request(request, { cache: "no-store" }))
       .then(response => {
         if (response && response.ok) {
           const copy = response.clone();
