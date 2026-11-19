@@ -1,9 +1,10 @@
-const CACHE_NAME = "yourwardrobe-v19";
+const CACHE_NAME = "yourwardrobe-v20";
 const APP_FILES = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./virtual-studio.js",
   "./manifest.json",
   "./assets/icon.svg"
 ];
