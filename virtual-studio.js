@@ -97,7 +97,14 @@ if (canvas && wrap) {
     male: "https://models.codelove.in/models/male-adult-01.glb",
     female: "https://models.codelove.in/models/female-adult-01.glb"
   };
+  const idleUrls = {
+    male: "https://models.codelove.in/animations/m_idle_neutral_01.glb",
+    female: "https://models.codelove.in/animations/f_idle_neutral_01.glb"
+  };
   const loadedModels = new Map();
+  const loadedMixers = new Map();
+  let activeMixer = null;
+  const clock = new THREE.Clock();
   const loader = new GLTFLoader();
   loader.setMeshoptDecoder(MeshoptDecoder);
   let activeKind = "male";
@@ -142,10 +149,11 @@ if (canvas && wrap) {
       }
     });
   }
-  function activateModel(kind, model) {
+  function activateModel(kind, model, mixer = null) {
     if (activeModel) avatar.remove(activeModel);
     fallback.visible = false;
     activeModel = model;
+    activeMixer = mixer;
     avatar.add(model);
     avatar.rotation.y = 0;
     currentRotation = 0;
@@ -156,7 +164,7 @@ if (canvas && wrap) {
   function loadAvatar(kind) {
     activeKind = kind;
     if (loadedModels.has(kind)) {
-      activateModel(kind, loadedModels.get(kind));
+      activateModel(kind, loadedModels.get(kind), loadedMixers.get(kind) || null);
       return;
     }
     setStatus("Loading 3D human model…");
@@ -166,7 +174,24 @@ if (canvas && wrap) {
         const model = gltf.scene;
         fitModel(model);
         loadedModels.set(kind, model);
-        if (activeKind === kind) activateModel(kind, model);
+        loader.load(
+          idleUrls[kind],
+          animationGltf => {
+            let mixer = null;
+            if (animationGltf.animations && animationGltf.animations.length) {
+              mixer = new THREE.AnimationMixer(model);
+              mixer.clipAction(animationGltf.animations[0]).play();
+            }
+            loadedMixers.set(kind, mixer);
+            if (activeKind === kind) activateModel(kind, model, mixer);
+          },
+          undefined,
+          error => {
+            console.warn("Idle animation unavailable; keeping the avatar in its default pose.", error);
+            loadedMixers.set(kind, null);
+            if (activeKind === kind) activateModel(kind, model, null);
+          }
+        );
       },
       undefined,
       error => {
@@ -194,8 +219,11 @@ if (canvas && wrap) {
 
   function animate() {
     requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+    activeMixer?.update(delta);
     currentRotation += (targetRotation - currentRotation) * 0.16;
     avatar.rotation.y = currentRotation;
+    camera.lookAt(0, 1.2, 0);
     camera.position.z += (zoom - camera.position.z) * 0.14;
     renderer.render(scene, camera);
   }
