@@ -492,38 +492,44 @@
     $("applyUpdate").disabled = true;
     $("applyUpdate").textContent = "Updating...";
 
+    const isNativeApk = Boolean(
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === "function" &&
+      window.Capacitor.isNativePlatform()
+    );
+
+    if (isNativeApk) {
+      // The APK displays the live GitHub Pages site. Remove its old
+      // WebView service-worker caches before requesting the latest page.
+      try {
+        const registrations = await navigator.serviceWorker?.getRegistrations?.() || [];
+        await Promise.all(registrations.map(registration => registration.unregister()));
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(key => caches.delete(key)));
+        }
+      } catch {
+        // Continue with a fresh navigation even if cleanup is unavailable.
+      }
+      const freshUrl = new URL(window.location.href);
+      freshUrl.searchParams.set("yw-apk-refresh", String(Date.now()));
+      window.location.replace(freshUrl.toString());
+      return;
+    }
+
     try {
       if (serviceWorkerRegistration) {
-        // Re-check the server at the moment the user requests the update.
         await serviceWorkerRegistration.update();
-        let waitingWorker = serviceWorkerRegistration.waiting;
-
-        // Give a newly discovered worker a moment to finish installing.
-        if (!waitingWorker && serviceWorkerRegistration.installing) {
-          waitingWorker = await new Promise(resolve => {
-            const worker = serviceWorkerRegistration.installing;
-            if (!worker) return resolve(serviceWorkerRegistration.waiting);
-            const check = () => {
-              if (worker.state === "installed" || worker.state === "redundant") {
-                worker.removeEventListener("statechange", check);
-                resolve(serviceWorkerRegistration.waiting);
-              }
-            };
-            worker.addEventListener("statechange", check);
-            check();
-          });
-        }
-
+        const waitingWorker = serviceWorkerRegistration.waiting;
         if (waitingWorker) {
           waitingWorker.postMessage({ type: "SKIP_WAITING" });
           return;
         }
       }
     } catch {
-      // Continue with a cache-busting reload if the update check is unavailable.
+      // Fall back to a cache-busting page reload.
     }
 
-    // Also refresh the live GitHub Pages build when no waiting worker exists.
     const freshUrl = new URL(window.location.href);
     freshUrl.searchParams.set("yw-refresh", String(Date.now()));
     window.location.replace(freshUrl.toString());
