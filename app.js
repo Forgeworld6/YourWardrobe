@@ -487,17 +487,46 @@
   }
 
   $("dismissUpdate").addEventListener("click", () => $("updateBanner").classList.add("hidden"));
-  $("applyUpdate").addEventListener("click", () => {
-    const waitingWorker = serviceWorkerRegistration && serviceWorkerRegistration.waiting;
-    if (!waitingWorker) {
-      $("updateBanner").classList.add("hidden");
-      showToast("YourWardrobe is already up to date.");
-      return;
-    }
+  $("applyUpdate").addEventListener("click", async () => {
     applyingUpdate = true;
     $("applyUpdate").disabled = true;
     $("applyUpdate").textContent = "Updating...";
-    waitingWorker.postMessage({ type: "SKIP_WAITING" });
+
+    try {
+      if (serviceWorkerRegistration) {
+        // Re-check the server at the moment the user requests the update.
+        await serviceWorkerRegistration.update();
+        let waitingWorker = serviceWorkerRegistration.waiting;
+
+        // Give a newly discovered worker a moment to finish installing.
+        if (!waitingWorker && serviceWorkerRegistration.installing) {
+          waitingWorker = await new Promise(resolve => {
+            const worker = serviceWorkerRegistration.installing;
+            if (!worker) return resolve(serviceWorkerRegistration.waiting);
+            const check = () => {
+              if (worker.state === "installed" || worker.state === "redundant") {
+                worker.removeEventListener("statechange", check);
+                resolve(serviceWorkerRegistration.waiting);
+              }
+            };
+            worker.addEventListener("statechange", check);
+            check();
+          });
+        }
+
+        if (waitingWorker) {
+          waitingWorker.postMessage({ type: "SKIP_WAITING" });
+          return;
+        }
+      }
+    } catch {
+      // Continue with a cache-busting reload if the update check is unavailable.
+    }
+
+    // Also refresh the live GitHub Pages build when no waiting worker exists.
+    const freshUrl = new URL(window.location.href);
+    freshUrl.searchParams.set("yw-refresh", String(Date.now()));
+    window.location.replace(freshUrl.toString());
   });
 
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
