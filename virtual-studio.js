@@ -1,53 +1,76 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/meshopt_decoder.module.js";
 
 const canvas = document.getElementById("virtualCanvas");
 const wrap = document.getElementById("virtualCanvasWrap");
 const loading = document.getElementById("virtualLoading");
+
 if (canvas && wrap) {
   const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x222321);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-  camera.position.set(0, 1.55, 6.8);
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  camera.position.set(0, 1.35, 5.7);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x777777, 2.1));
-  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x777777, 2.0));
+  const key = new THREE.DirectionalLight(0xffffff, 2.4);
   key.position.set(-3, 6, 5);
   key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0xffffff, 0.8);
+  const fill = new THREE.DirectionalLight(0xffffff, 1.0);
   fill.position.set(3, 3, -4);
   scene.add(fill);
 
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(2.2, 64), new THREE.MeshStandardMaterial({ color: 0xbabbb7, roughness: 1 }));
+  const floor = new THREE.Mesh(
+    new THREE.CircleGeometry(2.4, 64),
+    new THREE.MeshStandardMaterial({ color: 0xbabbb7, roughness: 1 })
+  );
   floor.rotation.x = -Math.PI / 2;
-  floor.position.y = -0.03;
+  floor.position.y = -0.025;
   floor.receiveShadow = true;
   scene.add(floor);
+
   const avatar = new THREE.Group();
   scene.add(avatar);
+  const fallback = new THREE.Group();
+  avatar.add(fallback);
 
   const skinMat = new THREE.MeshStandardMaterial({ color: 0xc99470, roughness: 0.86 });
   const shirtMat = new THREE.MeshStandardMaterial({ color: 0x777b80, roughness: 0.92 });
   const pantsMat = new THREE.MeshStandardMaterial({ color: 0x34383e, roughness: 0.95 });
   const shoeMat = new THREE.MeshStandardMaterial({ color: 0x222326, roughness: 0.9 });
   const hairMat = new THREE.MeshStandardMaterial({ color: 0x292522, roughness: 1 });
-  function capsule(radius, length, material, x, y, z, parent=avatar) {
+
+  function capsule(radius, length, material, x, y, z, parent=fallback) {
     const mesh = new THREE.Mesh(new THREE.CapsuleGeometry(radius, length, 5, 10), material);
-    mesh.position.set(x,y,z); mesh.castShadow = true; mesh.receiveShadow = true; parent.add(mesh); return mesh;
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    parent.add(mesh);
+    return mesh;
   }
-  function sphere(rx, ry, rz, material, x,y,z) {
+  function sphere(rx, ry, rz, material, x, y, z) {
     const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 18), material);
-    mesh.scale.set(rx,ry,rz); mesh.position.set(x,y,z); mesh.castShadow=true; avatar.add(mesh); return mesh;
+    mesh.scale.set(rx, ry, rz);
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    fallback.add(mesh);
+    return mesh;
   }
-  function buildAvatar(kind) {
-    avatar.clear();
+  function buildFallback(kind) {
+    fallback.clear();
     const female = kind === "female";
-    const torsoW = female ? .36 : .4;
     capsule(.19, .55, shirtMat, 0, 1.55, 0);
-    sphere(torsoW, .25, .2, shirtMat, 0, 1.68, 0);
+    sphere(female ? .36 : .4, .25, .2, shirtMat, 0, 1.68, 0);
     capsule(.105, .32, skinMat, 0, 2.05, 0);
     sphere(.145, .19, .14, skinMat, 0, 2.36, 0);
     sphere(.15, .11, .15, hairMat, 0, 2.49, -.015);
@@ -62,54 +85,164 @@ if (canvas && wrap) {
     capsule(.09, .12, shoeMat, -.14, -.005, .06);
     capsule(.09, .12, shoeMat, .14, -.005, .06);
     if (female) {
-      sphere(.12,.17,.12,hairMat,-.12,2.34,-.025);
-      sphere(.12,.17,.12,hairMat,.12,2.34,-.025);
+      sphere(.12, .17, .12, hairMat, -.12, 2.34, -.025);
+      sphere(.12, .17, .12, hairMat, .12, 2.34, -.025);
     } else {
-      sphere(.15,.06,.14,hairMat,0,2.43,.02);
+      sphere(.15, .06, .14, hairMat, 0, 2.43, .02);
     }
-    avatar.scale.set(female ? .96 : 1, female ? .98 : 1, 1);
+    fallback.scale.set(female ? .96 : 1, female ? .98 : 1, 1);
   }
-  buildAvatar("male");
-  avatar.position.y = 0;
-  let dragging=false, lastX=0, lastY=0, zoom=6.8, targetTilt=0;
-  function resize(){
-    const w=wrap.clientWidth, h=wrap.clientHeight;
-    if(!w||!h)return;
-    renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+
+  const modelUrls = {
+    male: "https://models.codelove.in/models/male-adult-01.glb",
+    female: "https://models.codelove.in/models/female-adult-01.glb"
+  };
+  const loadedModels = new Map();
+  const loader = new GLTFLoader();
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  let activeKind = "male";
+  let activeModel = null;
+  let dragging = false;
+  let lastX = 0;
+  let zoom = 5.7;
+  let targetRotation = 0;
+  let currentRotation = 0;
+
+  function setStatus(message) {
+    if (loading) {
+      loading.textContent = message;
+      loading.classList.remove("hidden");
+    }
   }
-  new ResizeObserver(resize).observe(wrap); resize();
-  function animate(){
+  function showFallback(kind, message) {
+    if (activeModel) {
+      avatar.remove(activeModel);
+      activeModel = null;
+    }
+    buildFallback(kind);
+    fallback.visible = true;
+    if (loading) {
+      loading.textContent = message;
+      loading.classList.remove("hidden");
+    }
+  }
+  function fitModel(model) {
+    const bounds = new THREE.Box3().setFromObject(model);
+    const size = bounds.getSize(new THREE.Vector3());
+    const center = bounds.getCenter(new THREE.Vector3());
+    const height = Math.max(size.y, 0.1);
+    const scale = 2.48 / height;
+    model.scale.setScalar(scale);
+    model.position.set(-center.x * scale, -bounds.min.y * scale, -center.z * scale);
+    model.traverse(node => {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+        if (node.material) node.material.side = THREE.FrontSide;
+      }
+    });
+  }
+  function activateModel(kind, model) {
+    if (activeModel) avatar.remove(activeModel);
+    fallback.visible = false;
+    activeModel = model;
+    avatar.add(model);
+    avatar.rotation.y = 0;
+    currentRotation = 0;
+    targetRotation = 0;
+    activeKind = kind;
+    if (loading) loading.classList.add("hidden");
+  }
+  function loadAvatar(kind) {
+    activeKind = kind;
+    if (loadedModels.has(kind)) {
+      activateModel(kind, loadedModels.get(kind));
+      return;
+    }
+    setStatus("Loading 3D human model…");
+    loader.load(
+      modelUrls[kind],
+      gltf => {
+        const model = gltf.scene;
+        fitModel(model);
+        loadedModels.set(kind, model);
+        if (activeKind === kind) activateModel(kind, model);
+      },
+      undefined,
+      error => {
+        console.error("YourWardrobe avatar model could not be loaded:", error);
+        if (activeKind === kind) {
+          showFallback(kind, "Could not load the model. Showing the backup preview.");
+        }
+      }
+    );
+  }
+
+  loadAvatar("male");
+
+  function resize() {
+    const width = wrap.clientWidth;
+    const height = wrap.clientHeight;
+    if (!width || !height) return;
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  }
+  if ("ResizeObserver" in window) new ResizeObserver(resize).observe(wrap);
+  else window.addEventListener("resize", resize);
+  resize();
+
+  function animate() {
     requestAnimationFrame(animate);
-    avatar.rotation.y += (targetTilt-avatar.rotation.y)*.16;
-    camera.position.z += (zoom-camera.position.z)*.14;
-    renderer.render(scene,camera);
+    currentRotation += (targetRotation - currentRotation) * 0.16;
+    avatar.rotation.y = currentRotation;
+    camera.position.z += (zoom - camera.position.z) * 0.14;
+    renderer.render(scene, camera);
   }
   animate();
-  loading?.classList.add("hidden");
-  canvas.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId);});
-  canvas.addEventListener("pointermove",e=>{if(!dragging)return;targetTilt+=(e.clientX-lastX)*.012;lastX=e.clientX;lastY=e.clientY;});
-  canvas.addEventListener("pointerup",()=>dragging=false);
-  canvas.addEventListener("pointercancel",()=>dragging=false);
-  canvas.addEventListener("wheel",e=>{e.preventDefault();zoom=THREE.MathUtils.clamp(zoom+e.deltaY*.008,4.5,9);},{passive:false});
-  document.querySelectorAll("[data-avatar]").forEach(b=>b.addEventListener("click",()=>{
-    document.querySelectorAll("[data-avatar]").forEach(x=>x.classList.toggle("active",x===b));
-    buildAvatar(b.dataset.avatar);
-  }));
-  document.getElementById("rotateLeft")?.addEventListener("click",()=>targetTilt-=Math.PI/4);
-  document.getElementById("rotateRight")?.addEventListener("click",()=>targetTilt+=Math.PI/4);
-  document.getElementById("viewFront")?.addEventListener("click",()=>targetTilt=0);
-  document.getElementById("viewSide")?.addEventListener("click",()=>targetTilt=Math.PI/2);
-  document.getElementById("viewBack")?.addEventListener("click",()=>targetTilt=Math.PI);
-  document.getElementById("zoomIn")?.addEventListener("click",()=>zoom=THREE.MathUtils.clamp(zoom-.5,4.5,9));
-  document.getElementById("zoomOut")?.addEventListener("click",()=>zoom=THREE.MathUtils.clamp(zoom+.5,4.5,9));
-  document.getElementById("syncVirtualOutfit")?.addEventListener("click",()=>{
-    const pairs=[["topPreview","virtualTopStatus"],["bottomPreview","virtualBottomStatus"],["shoesPreview","virtualShoesStatus"]];
-    pairs.forEach(([source,target])=>{
-      const img=document.querySelector("#"+source+" .slot-visual img");
-      document.getElementById(target).textContent=img?.getAttribute("src")?"Image selected":"Not selected";
+
+  canvas.addEventListener("pointerdown", event => {
+    dragging = true;
+    lastX = event.clientX;
+    canvas.setPointerCapture(event.pointerId);
+  });
+  canvas.addEventListener("pointermove", event => {
+    if (!dragging) return;
+    targetRotation += (event.clientX - lastX) * 0.012;
+    lastX = event.clientX;
+  });
+  canvas.addEventListener("pointerup", () => dragging = false);
+  canvas.addEventListener("pointercancel", () => dragging = false);
+  canvas.addEventListener("wheel", event => {
+    event.preventDefault();
+    zoom = THREE.MathUtils.clamp(zoom + event.deltaY * 0.008, 3.2, 8.5);
+  }, { passive: false });
+
+  document.querySelectorAll("[data-avatar]").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll("[data-avatar]").forEach(item => item.classList.toggle("active", item === button));
+      loadAvatar(button.dataset.avatar);
     });
-    const any=pairs.some(([source])=>document.querySelector("#"+source+" .slot-visual img")?.getAttribute("src"));
-    const message=document.querySelector(".virtual-disclaimer");
-    if(message) message.textContent=any?"Your Home outfit is detected. Garment textures and realistic fitting are the next integration stage.":"Choose clothes on Home first, then tap Use Home outfit.";
+  });
+
+  document.getElementById("rotateLeft")?.addEventListener("click", () => targetRotation -= Math.PI / 4);
+  document.getElementById("rotateRight")?.addEventListener("click", () => targetRotation += Math.PI / 4);
+  document.getElementById("viewFront")?.addEventListener("click", () => targetRotation = 0);
+  document.getElementById("viewSide")?.addEventListener("click", () => targetRotation = Math.PI / 2);
+  document.getElementById("viewBack")?.addEventListener("click", () => targetRotation = Math.PI);
+  document.getElementById("zoomIn")?.addEventListener("click", () => zoom = THREE.MathUtils.clamp(zoom - .5, 3.2, 8.5));
+  document.getElementById("zoomOut")?.addEventListener("click", () => zoom = THREE.MathUtils.clamp(zoom + .5, 3.2, 8.5));
+
+  document.getElementById("syncVirtualOutfit")?.addEventListener("click", () => {
+    const pairs = [["topPreview", "virtualTopStatus"], ["bottomPreview", "virtualBottomStatus"], ["shoesPreview", "virtualShoesStatus"]];
+    pairs.forEach(([source, target]) => {
+      const image = document.querySelector("#" + source + " .slot-visual img");
+      document.getElementById(target).textContent = image?.getAttribute("src") ? "Image selected" : "Not selected";
+    });
+    const hasAny = pairs.some(([source]) => document.querySelector("#" + source + " .slot-visual img")?.getAttribute("src"));
+    const message = document.querySelector(".virtual-disclaimer");
+    if (message) message.textContent = hasAny
+      ? "Your Home outfit is detected. Clothing textures and realistic fitting are the next development stage."
+      : "Choose clothes on Home first, then tap Use Home outfit.";
   });
 }
