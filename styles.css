@@ -1048,14 +1048,23 @@ body.dark .confirm-remove{background:#eee;color:#171717;border-color:#eee}
 }
 
 
-/* Keep the app header below Android's status bar / system icons. */
+/* Reserve a reliable status-bar area on Android WebView and mobile browsers. */
 @media(max-width:600px){
   .app-topbar{
     box-sizing:border-box;
-    height:calc(70px + max(26px, env(safe-area-inset-top)));
-    min-height:calc(70px + max(26px, env(safe-area-inset-top)));
-    padding-top:max(26px, env(safe-area-inset-top));
-    padding-bottom:10px;
+    height:112px;
+    min-height:112px;
+    padding-top:max(42px, env(safe-area-inset-top));
+    padding-bottom:12px;
+    padding-left:18px;
+    padding-right:18px;
     align-items:flex-end;
+    position:relative;
+    z-index:2;
+  }
+  .app-topbar .app-brand,
+  .app-topbar .notification-button{
+    position:relative;
+    z-index:3;
   }
 }
