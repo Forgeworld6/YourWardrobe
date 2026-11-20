@@ -1099,3 +1099,94 @@ body.dark .virtual-canvas-wrap{background:radial-gradient(ellipse at 50% 38%,#39
  .virtual-canvas-wrap{height:54vh;min-height:330px}
  .virtual-outfit-card{padding:14px}
 }
+
+/* Items Used V1.2: independent lists without enclosing column cards. */
+.app-main #wardrobeGrid > .wardrobe-columns{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  align-items:start;
+  gap:14px;
+}
+.app-main .wardrobe-column{
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.app-main .wardrobe-column-title{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding:12px 4px!important;
+  background:var(--bg);
+  border-bottom:1px solid var(--line);
+}
+.app-main .wardrobe-column-list{
+  box-sizing:border-box;
+  height:min(58vh,560px)!important;
+  min-height:180px!important;
+  flex:none!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior-y:contain;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  padding:10px 3px 18px!important;
+  gap:10px!important;
+  align-content:start;
+}
+.app-main .wardrobe-column-list .wardrobe-card{
+  display:flex!important;
+  flex-direction:column!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  border:1px solid var(--line)!important;
+  border-radius:12px!important;
+  background:var(--surface)!important;
+}
+.app-main .wardrobe-column-list .wardrobe-image-open{
+  display:block!important;
+  flex:none!important;
+  width:100%!important;
+  height:116px!important;
+  min-height:116px!important;
+  padding:0!important;
+  background:var(--bg)!important;
+}
+.app-main .wardrobe-column-list .wardrobe-image-open img{
+  display:block!important;
+  width:100%!important;
+  height:116px!important;
+  max-height:none!important;
+  padding:6px!important;
+  object-fit:contain!important;
+}
+.app-main .wardrobe-column-list .wardrobe-card-info{
+  display:block!important;
+  flex:none!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  padding:8px!important;
+}
+.app-main .wardrobe-column-list .wardrobe-card-info .remove-item-btn{
+  display:block!important;
+  position:static!important;
+  width:100%!important;
+  min-height:40px!important;
+  height:auto!important;
+  margin:0!important;
+  padding:8px 5px!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+@media(max-width:600px){
+  .app-main #wardrobeGrid > .wardrobe-columns{gap:12px}
+  .app-main .wardrobe-column-title{font-size:11px!important}
+  .app-main .wardrobe-column-list{height:58vh!important;padding:8px 2px 16px!important}
+  .app-main .wardrobe-column-list .wardrobe-image-open,
+  .app-main .wardrobe-column-list .wardrobe-image-open img{height:108px!important;min-height:108px!important}
+}
