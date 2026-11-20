@@ -535,17 +535,37 @@
     window.location.replace(freshUrl.toString());
   });
 
+  const isCapacitorNativeApp = Boolean(
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === "function" &&
+    window.Capacitor.isNativePlatform()
+  );
+
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    navigator.serviceWorker.addEventListener("controllerchange", () => {
-      if (applyingUpdate) window.location.reload();
-    });
     window.addEventListener("load", async () => {
+      if (isCapacitorNativeApp) {
+        // The APK loads the live GitHub Pages site. Avoid a second, persistent
+        // service-worker cache inside Android WebView; always use live web assets.
+        try {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(registration => registration.unregister()));
+          if ("caches" in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.filter(key => key.startsWith("yourwardrobe-")).map(key => caches.delete(key)));
+          }
+        } catch {}
+        return;
+      }
+
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (applyingUpdate) window.location.reload();
+      });
       try {
         serviceWorkerRegistration = await navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" });
         watchServiceWorker(serviceWorkerRegistration);
         await serviceWorkerRegistration.update();
       } catch {
-        // The app remains usable if service worker registration is unavailable.
+        // The browser app remains usable if service worker registration is unavailable.
       }
     });
   }
