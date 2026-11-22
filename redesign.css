@@ -38,3 +38,22 @@ body.dark .app-main,body.dark .app-shell{background:var(--bg)}body.dark .outfit-
 body.dark h1,body.dark h2,body.dark h3,body.dark .home-heading h1,body.dark .page-heading h1{color:#f2f5ff}body.dark .bottom-nav{background:#18264d}body.dark .bottom-nav-item.active{background:#d9ed58;color:#172d68}
 @media(min-width:900px){.app-main .page{padding-top:56px}.outfit-slot,.outfit-board{max-width:1050px}.bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(100%,1100px);border-left:1px solid #c4d1e7;border-right:1px solid #c4d1e7;border-radius:14px 14px 0 0}}
 @media(max-width:600px){.app-shell.sketch-app-shell{padding-bottom:94px}.app-topbar{height:76px;min-height:76px;padding:0 14px;border-bottom-width:5px}.brand-mark{width:46px;height:46px;font-size:30px}.brand-name{font-size:15px}.topbar-caption{display:none}.notification-button{width:42px;height:42px}.app-main.main-content{padding:0 14px}.app-main .page{padding:28px 0 35px;min-height:calc(100dvh - 170px)}.home-heading,.page-heading{margin-bottom:28px}.home-heading h1,.page-heading h1{font-size:clamp(40px,11vw,54px);line-height:1.12;margin:16px 0}.home-heading .subheading,.page-heading .subheading{font-size:14px;line-height:1.5}.home-heading{display:block}.home-heading-actions{margin-top:18px}.outfit-board{gap:14px;margin:26px 0 14px}.outfit-slot{grid-template-columns:28px 82px minmax(0,1fr) 18px!important;gap:10px!important;min-height:132px!important;padding:12px 10px!important}.outfit-slot:before{font-size:12px;padding-top:4px}.slot-visual{width:82px!important;height:94px!important;min-height:94px!important}.slot-placeholder-icon{font-size:40px!important}.slot-placeholder strong{font-size:12px!important}.slot-placeholder small{font-size:10px!important}.outfit-slot .slot-action{font-size:22px}.outfit-save-area{padding:14px;margin-top:20px}.outfit-save-row{flex-direction:column}.outfit-save-row input,.outfit-save-row button{width:100%;min-height:46px}.bottom-nav{gap:2px;padding:7px 7px calc(7px + env(safe-area-inset-bottom))}.bottom-nav-item{min-height:66px;font-size:11px;gap:5px}.bottom-nav-icon{font-size:23px}.empty-card{min-height:270px;padding:24px}.profile-card{padding:16px}.profile-avatar{width:68px;height:68px}}
+
+/* Final card geometry: the clickable label contains the image tile and copy. */
+.outfit-slot{grid-template-columns:34px minmax(0,1fr) 30px!important}
+.outfit-slot:nth-child(1):before{content:"01"}.outfit-slot:nth-child(2):before{content:"02"}.outfit-slot:nth-child(3):before{content:"03"}
+.outfit-slot .slot-visual{grid-column:2;display:grid!important;grid-template-columns:120px minmax(0,1fr)!important;justify-content:start!important;align-items:center!important;gap:20px!important;width:100%!important;height:auto!important;min-height:120px!important;background:transparent!important;text-align:left!important}
+.outfit-slot .slot-placeholder{display:grid!important;grid-template-columns:120px minmax(0,1fr)!important;grid-template-rows:auto auto;justify-items:start!important;align-content:center!important;gap:5px 20px!important;text-align:left!important}
+.outfit-slot .slot-placeholder-icon{grid-column:1;grid-row:1/3;width:120px!important;height:120px!important;display:grid!important;place-items:center!important;background:#e0e9ff!important;font-size:52px!important}
+.outfit-slot .slot-placeholder div{grid-column:2;grid-row:1/3}
+.outfit-slot .slot-visual img{grid-column:1;grid-row:1;width:120px!important;height:120px!important;object-fit:contain!important}
+.outfit-slot:after{content:"↗";grid-column:3;grid-row:1;color:#172d68;font-size:28px;align-self:center}
+.outfit-slot .slot-visual:has(img[src]) .slot-placeholder{display:none!important}
+@media(max-width:600px){
+ .outfit-slot{grid-template-columns:24px minmax(0,1fr) 20px!important;gap:8px!important}
+ .outfit-slot .slot-visual{grid-template-columns:82px minmax(0,1fr)!important;gap:12px!important;min-height:94px!important}
+ .outfit-slot .slot-placeholder{grid-template-columns:82px minmax(0,1fr)!important;gap:5px 12px!important}
+ .outfit-slot .slot-placeholder-icon,.outfit-slot .slot-visual img{width:82px!important;height:94px!important}
+ .outfit-slot .slot-placeholder-icon{font-size:42px!important}
+ .outfit-slot:after{font-size:22px}
+}
