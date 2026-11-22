@@ -10,6 +10,7 @@
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./redesign.css" />
 </head>
 <body>
   <div class="app-intro" id="appIntro" role="status" aria-label="YourWardrobe is opening">
@@ -36,9 +37,9 @@
       <section class="page active" id="page-home">
         <div class="home-heading">
           <div>
-            <p class="eyebrow">HOME</p>
-            <h1>Build your outfit</h1>
-            <p class="subheading">Tap any row to add or change its photo from your gallery.</p>
+            <p class="eyebrow">THE OUTFIT STUDIO / 01</p>
+            <h1>Get dressed, your way.</h1>
+            <p class="subheading">A great look starts with three good pieces. Pick yours below and make it a keeper.</p>
           </div>
           <div class="home-heading-actions"><button class="secondary-btn" type="button" data-go="studio">3D Virtual Studio ↗</button><button class="clear-studio-btn" type="button" id="clearStudio">Clear all</button></div>
         </div>
@@ -142,7 +143,7 @@
 
       <section class="page" id="page-saved">
         <div class="page-heading">
-          <div><p class="eyebrow">YOUR COLLECTION</p><h1>Saved outfits</h1><p class="subheading">Outfit combinations you saved for later.</p></div>
+          <div><p class="eyebrow">YOUR COLLECTION / 02</p><h1>Looks worth keeping.</h1><p class="subheading">Your favourite combinations, ready whenever inspiration strikes.</p></div>
         </div>
         <div class="saved-grid" id="savedGrid">
           <div class="empty-card"><span>♡</span><strong>No saved outfits yet</strong><p>Build an outfit on Home and save it here.</p><button class="secondary-btn" data-go="home">Create an outfit</button></div>
@@ -151,7 +152,7 @@
 
       <section class="page" id="page-wardrobe">
         <div class="page-heading">
-          <div><p class="eyebrow">YOUR HISTORY</p><h1>Items used before</h1><p class="subheading">Clothing pieces you've added from your gallery.</p></div>
+          <div><p class="eyebrow">THE ROTATION / 03</p><h1>Good pieces, on repeat.</h1><p class="subheading">Every piece you choose joins this handy little shortlist.</p></div>
         </div>
         <div class="wardrobe-toolbar"><span id="wardrobeCount">0 items</span><span class="muted">Saved on this device</span></div>
         <div class="wardrobe-grid" id="wardrobeGrid">
@@ -161,7 +162,7 @@
 
       <section class="page" id="page-profile">
         <div class="page-heading">
-          <div><p class="eyebrow">YOUR SPACE</p><h1>Profile</h1><p class="subheading">Your app preferences and wardrobe activity.</p></div>
+          <div><p class="eyebrow">YOUR SPACE / 04</p><h1>A space for your style.</h1><p class="subheading">Your wardrobe at a glance, with a few ways to make the experience yours.</p></div>
         </div>
         <div class="profile-card">
           <div class="profile-avatar">YW</div>
@@ -181,8 +182,8 @@
     </main>
 
     <nav class="bottom-nav" aria-label="Main navigation">
-      <button class="bottom-nav-item nav-item active" type="button" data-page="home" aria-current="page"><span class="bottom-nav-icon">⌂</span><span>Home</span></button>
-      <button class="bottom-nav-item nav-item" type="button" data-page="saved"><span class="bottom-nav-icon">♡</span><span>Saved outfits</span></button>
+      <button class="bottom-nav-item nav-item active" type="button" data-page="home" aria-current="page"><span class="bottom-nav-icon">▱</span><span>Studio</span></button>
+      <button class="bottom-nav-item nav-item" type="button" data-page="saved"><span class="bottom-nav-icon">♧</span><span>Saved looks</span></button>
       <button class="bottom-nav-item nav-item" type="button" data-page="wardrobe"><span class="bottom-nav-icon">≡</span><span>Items used</span></button>
       <button class="bottom-nav-item nav-item" type="button" data-page="profile"><span class="bottom-nav-icon">◉</span><span>Profile</span></button>
     </nav>
