@@ -41,16 +41,17 @@
             <h1>Get dressed, your way.</h1>
             <p class="subheading">A great look starts with three good pieces. Pick yours below and make it a keeper.</p>
           </div>
-          <div class="home-heading-actions"><button class="secondary-btn" type="button" data-go="studio">3D Virtual Studio ↗</button><button class="clear-studio-btn" type="button" id="clearStudio">Clear all</button></div>
+          <div class="home-heading-actions"><button class="secondary-btn" type="button" data-go="studio">Open 3D Studio ↗</button></div>
         </div>
 
+        <div class="pieces-heading"><h2>The pieces</h2><button class="clear-studio-btn" type="button" id="clearStudio">Clear look</button></div>
         <div class="outfit-board" aria-label="Outfit items">
           <article class="outfit-slot outfit-slot--top" id="topPreview">
             <label class="slot-visual" for="topInput" aria-label="Add or change top from gallery">
               <img alt="Top or shirt preview" />
               <div class="slot-placeholder">
                 <span class="slot-placeholder-icon">＋</span>
-                <div><strong>Add your top</strong><small>Shirt, T-shirt, jacket…</small></div>
+                <div><strong>Your top</strong><small>Tap to choose a top</small></div>
               </div>
             </label>
             <input class="slot-file-input" id="topInput" type="file" accept="image/*" />
@@ -61,7 +62,7 @@
               <img alt="Bottom or pants preview" />
               <div class="slot-placeholder">
                 <span class="slot-placeholder-icon">＋</span>
-                <div><strong>Add your bottom</strong><small>Pants, jeans, skirt…</small></div>
+                <div><strong>Your bottom</strong><small>Tap to choose a bottom</small></div>
               </div>
             </label>
             <input class="slot-file-input" id="bottomInput" type="file" accept="image/*" />
@@ -72,7 +73,7 @@
               <img alt="Footwear preview" />
               <div class="slot-placeholder">
                 <span class="slot-placeholder-icon">＋</span>
-                <div><strong>Add your footwear</strong><small>Shoes, sneakers, sandals…</small></div>
+                <div><strong>Your footwear</strong><small>Tap to choose footwear</small></div>
               </div>
             </label>
             <input class="slot-file-input" id="shoesInput" type="file" accept="image/*" />
@@ -146,7 +147,7 @@
           <div><p class="eyebrow">YOUR COLLECTION / 02</p><h1>Looks worth keeping.</h1><p class="subheading">Your favourite combinations, ready whenever inspiration strikes.</p></div>
         </div>
         <div class="saved-grid" id="savedGrid">
-          <div class="empty-card"><span>♡</span><strong>No saved outfits yet</strong><p>Build an outfit on Home and save it here.</p><button class="secondary-btn" data-go="home">Create an outfit</button></div>
+          <div class="empty-card"><span>♧</span><strong>Your collection starts here.</strong><p>Choose three pieces in the Studio and save your first look.</p><button class="primary-btn" data-go="home">Build a look</button></div>
         </div>
       </section>
 
@@ -156,7 +157,7 @@
         </div>
         <div class="wardrobe-toolbar"><span id="wardrobeCount">0 items</span><span class="muted">Saved on this device</span></div>
         <div class="wardrobe-grid" id="wardrobeGrid">
-          <div class="empty-card"><span>▤</span><strong>No items yet</strong><p>Items you add to an outfit will appear here.</p><button class="secondary-btn" data-go="home">Add your first item</button></div>
+          <div class="empty-card"><span>♧</span><strong>Nothing in the rotation yet.</strong><p>Try a piece in the Studio and you’ll find it here.</p><button class="primary-btn" data-go="home">Explore the Studio</button></div>
         </div>
       </section>
 
@@ -173,7 +174,7 @@
           <div><strong id="profileLookCount">0</strong><span>Saved outfits</span></div>
         </div>
         <div class="settings-card">
-          <p class="eyebrow">APP SETTINGS</p>
+          <p class="eyebrow">PREFERENCES</p>
           <button class="setting-row" id="soundToggle" type="button"><span class="setting-icon">♫</span><span><strong>Sound effects</strong><small>Play the opening chime</small></span><span class="setting-state" id="soundStatus">On</span></button>
           <button class="setting-row" id="themeToggle" type="button"><span class="setting-icon">◐</span><span><strong>Appearance</strong><small>Switch between light and dark mode</small></span><span class="setting-state" id="themeStatus">Light</span></button>
         </div>
