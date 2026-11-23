@@ -141,3 +141,6 @@ body.dark h1,body.dark h2,body.dark h3,body.dark .home-heading h1,body.dark .pag
  .bottom-nav-item{min-height:72px;font-size:12px;gap:7px}
  .bottom-nav-icon{font-size:25px}
 }
+
+.bottom-nav-icon svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block}
+@media(max-width:600px){.bottom-nav-icon svg{width:25px;height:25px}}
